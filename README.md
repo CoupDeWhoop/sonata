@@ -1,6 +1,6 @@
 # Music Practice Log Backend
 
-Currently in production, this is the backend for a music practice log application.
+Currently in production, this is the backend for a music practice record/journal application.
 
 ## Overview
 
