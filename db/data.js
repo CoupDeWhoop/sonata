@@ -1,7 +1,7 @@
 const lessonsData = [
-    { id: 1, lesson_date: '2024-01-01', lesson_time: '10:00:00', length: 60 },
-    { id: 2, lesson_date: '2024-01-03', lesson_time: '15:30:00', length: 45 },
-    { id: 3, lesson_date: '2024-01-05', lesson_time: '11:15:00', length: 75 }
+    { lesson_date: '2024-01-01', lesson_time: '10:00:00', length: 60 },
+    { lesson_date: '2024-01-03', lesson_time: '15:30:00', length: 45 },
+    { lesson_date: '2024-01-05', lesson_time: '11:15:00', length: 75 }
 ];
 
 const lessonNotesData = [
@@ -15,9 +15,9 @@ const lessonNotesData = [
 ];
 
 const practiceData = [
-    { id: 1, practice_date: '2024-01-02', practice_time: '12:45:00', length: 30 },
-    { id: 2, practice_date: '2024-01-04', practice_time: '09:00:00', length: 60 },
-    { id: 3, practice_date: '2024-01-06', practice_time: '14:00:00', length: 45 }
+    { practice_date: '2024-01-02', practice_time: '12:45:00', length: 30 },
+    { practice_date: '2024-01-04', practice_time: '09:00:00', length: 60 },
+    { practice_date: '2024-01-06', practice_time: '14:00:00', length: 45 }
 ];
 
 const practiceNotesData = [
