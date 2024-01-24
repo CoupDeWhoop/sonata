@@ -1,6 +1,12 @@
-const db = require('./connection.js')
+const db = require('./connection.js');
+const format = require('pg');
 
-const seed = () => {
+
+const seed = ({ lessonsData,
+        lessonNotesData,
+        practiceData,
+        practiceNotesData
+    }) => {
     return db
         // drop in reverse order
         .query('DROP TABLE IF EXISTS practise_notes;')
@@ -18,7 +24,8 @@ const seed = () => {
             return db.query(`
                 CREATE TABLE lessons (
                     id SERIAL PRIMARY KEY,
-                    time TIMESTAMP,
+                    lesson_date DATE,
+                    lesson_time TIME,
                     duration INTERVAL
                 );
             `)
@@ -27,6 +34,7 @@ const seed = () => {
             return db.query(`
                 CREATE TABLE lesson_notes (
                     lesson_id INT REFERENCES lessons(id),
+                    note_number SERIAL,
                     notes VARCHAR
                 );
             `)
@@ -35,7 +43,8 @@ const seed = () => {
             return db.query(`
                 CREATE TABLE practises (
                     id SERIAL PRIMARY KEY,
-                    time TIMESTAMP,
+                    practice_date DATE,
+                    practice_time TIME,
                     duration INTERVAL
                 );
             `)
@@ -43,7 +52,8 @@ const seed = () => {
         .then(() => {
             return db.query(`
                 CREATE TABLE practise_notes (
-                    lesson_id INT REFERENCES practises(id),
+                    practice_id INT REFERENCES practises(id),
+                    note_number SERIAL,
                     notes VARCHAR
                 );
             `)
