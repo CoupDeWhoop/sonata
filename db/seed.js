@@ -2,7 +2,8 @@ const db = require('./connection.js');
 const format = require('pg-format');
 
 
-const seed = ({ lessonsData,
+const seed = ({ usersData,
+        lessonsData,
         lessonNotesData,
         practiceData,
         practiceNotesData
@@ -19,14 +20,27 @@ const seed = ({ lessonsData,
         .then(() => {
             return db.query('DROP TABLE IF EXISTS lessons;')
         })
-        // create tables INTERVAL converts to HH:MM:SS
+        .then(() => {
+            return db.query('DROP TABLE IF EXISTS users')
+        })
+        .then(() => {
+            return db.query(`
+                CREATE TABLE users (
+                    id SERIAL PRIMARY KEY,
+                    username VARCHAR NOT NULL,
+                    password VARCHAR(50) NOT NULL,
+                    instrument VARCHAR
+                );
+            `)
+        })
         .then(() => {
             return db.query(`
                 CREATE TABLE lessons (
                     id SERIAL PRIMARY KEY,
+                    user_id INT REFERENCES users(id),
                     lesson_date DATE,
                     lesson_time TIME,
-                    duration INTEGER 
+                    duration INT DEFAULT 20
                 );
             `)
         })
@@ -43,9 +57,10 @@ const seed = ({ lessonsData,
             return db.query(`
                 CREATE TABLE practices (
                     id SERIAL PRIMARY KEY,
+                    user_id INT REFERENCES users(id),
                     practice_date DATE,
                     practice_time TIME,
-                    duration INTEGER 
+                    duration INT DEFAULT 5
                 );
             `)
         })
@@ -58,16 +73,25 @@ const seed = ({ lessonsData,
                 );
             `)
         })
-        // then hydrate? the table
+        // then hydrate? the tables
+        .then(() => {
+            const insertUsersQueryStr = format(
+                'INSERT INTO users (username, password, instrument) VALUES %L;',
+                usersData.map(({ username, password, instrument }) => {
+                    return [username, password, instrument];
+                })
+            )
+            return db.query(insertUsersQueryStr);
+        })
         .then(() => {
             //set up query string
             const formattedLessons = lessonsData.map((lesson) => {
-                return [lesson.lesson_date, lesson.lesson_time, lesson.length]
+                return [lesson.user_id, lesson.lesson_date, lesson.lesson_time, lesson.length]
             })
             const insertLessonsQueryString = format(
                 `
                 INSERT INTO lessons
-                (lesson_date, lesson_time, duration)
+                (user_id, lesson_date, lesson_time, duration)
                 VALUES
                 %L
                 RETURNING *;
