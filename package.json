@@ -7,7 +7,8 @@
     "test": "jest",
     "setup-db": "psql -f db/setup-db.sql",
     "seed": "node db/run-seed.js",
-    "playground": "psql -f playground.sql > playground.txt"
+    "playground": "psql -f playground.sql > playground.txt",
+    "prepare": "husky"
   },
   "keywords": [],
   "author": "",
@@ -18,6 +19,7 @@
     "pg": "^8.11.3"
   },
   "devDependencies": {
+    "husky": "^9.0.1",
     "pg-format": "^1.0.4"
   }
 }
