@@ -19,14 +19,14 @@ const seed = ({ lessonsData,
         .then(() => {
             return db.query('DROP TABLE IF EXISTS lessons;')
         })
-        // create tables
+        // create tables INTERVAL converts to HH:MM:SS
         .then(() => {
             return db.query(`
                 CREATE TABLE lessons (
                     id SERIAL PRIMARY KEY,
                     lesson_date DATE,
                     lesson_time TIME,
-                    duration INTERVAL
+                    duration INTEGER 
                 );
             `)
         })
@@ -45,7 +45,7 @@ const seed = ({ lessonsData,
                     id SERIAL PRIMARY KEY,
                     practice_date DATE,
                     practice_time TIME,
-                    duration INTERVAL
+                    duration INTEGER 
                 );
             `)
         })
