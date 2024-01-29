@@ -1,6 +1,8 @@
 const db = require('./connection.js');
 const format = require('pg-format');
+const { generateUserUUIDs, createRef, replaceKeyWithId } = require('./utils.js')
 
+let userIdLookup = {};
 
 const seed = ({ usersData,
         lessonsData,
@@ -11,24 +13,17 @@ const seed = ({ usersData,
     return db
         // drop in reverse order
         .query('DROP TABLE IF EXISTS practice_notes;')
-        .then(() => {
-            return db.query('DROP TABLE IF EXISTS practices;')
-        })
-        .then(() => {
-            return db.query('DROP TABLE IF EXISTS lesson_notes;')
-        })
-        .then(() => {
-            return db.query('DROP TABLE IF EXISTS lessons;')
-        })
-        .then(() => {
-            return db.query('DROP TABLE IF EXISTS users')
-        })
+        .then(() => db.query('DROP TABLE IF EXISTS practices;'))
+        .then(() => db.query('DROP TABLE IF EXISTS lesson_notes;'))
+        .then(() => db.query('DROP TABLE IF EXISTS lessons;'))
+        .then(() => db.query('DROP TABLE IF EXISTS users'))
         .then(() => {
             return db.query(`
                 CREATE TABLE users (
-                    id SERIAL PRIMARY KEY,
-                    username VARCHAR NOT NULL,
-                    password VARCHAR(50) NOT NULL,
+                    user_id uuid PRIMARY KEY NOT NULL,
+                    user_name VARCHAR NOT NULL,
+                    user_email VARCHAR(256) NOT NULL,
+                    user_password VARCHAR(50) NOT NULL,
                     instrument VARCHAR
                 );
             `)
@@ -36,8 +31,8 @@ const seed = ({ usersData,
         .then(() => {
             return db.query(`
                 CREATE TABLE lessons (
-                    id SERIAL PRIMARY KEY,
-                    user_id INT REFERENCES users(id),
+                    lesson_id SERIAL PRIMARY KEY,
+                    user_id uuid REFERENCES users(user_id) NOT NULL,
                     lesson_date DATE,
                     lesson_time TIME,
                     duration INT DEFAULT 20
@@ -48,7 +43,7 @@ const seed = ({ usersData,
             return db.query(`
             CREATE TABLE lesson_notes (
                 note_id SERIAL PRIMARY KEY,
-                lesson_id INT REFERENCES lessons(id),
+                lesson_id INT REFERENCES lessons(lesson_id),
                 notes VARCHAR
             );
         `);
@@ -56,8 +51,8 @@ const seed = ({ usersData,
         .then(() => {
             return db.query(`
                 CREATE TABLE practices (
-                    id SERIAL PRIMARY KEY,
-                    user_id INT REFERENCES users(id),
+                    practice_id SERIAL PRIMARY KEY,
+                    user_id uuid REFERENCES users(user_id),
                     practice_date DATE,
                     practice_time TIME,
                     duration INT DEFAULT 5
@@ -68,26 +63,34 @@ const seed = ({ usersData,
             return db.query(`
                 CREATE TABLE practice_notes (
                     note_id SERIAL PRIMARY KEY,
-                    practice_id INT REFERENCES practices(id),
+                    practice_id INT REFERENCES practices(practice_id),
                     notes VARCHAR
                 );
             `)
         })
         // then hydrate? the tables
         .then(() => {
+            const usersWithAddedUUIDs = generateUserUUIDs(usersData);
             const insertUsersQueryStr = format(
-                'INSERT INTO users (username, password, instrument) VALUES %L;',
-                usersData.map(({ username, password, instrument }) => {
-                    return [username, password, instrument];
+                `
+                INSERT INTO users (user_id, user_name, user_email, user_password, instrument) 
+                VALUES %L RETURNING *;
+                `,
+                //convert array of objects to array of simple user-data arrays
+                usersWithAddedUUIDs.map(({ user_id, name, email, password, instrument }) => {
+                    return [user_id, name, email, password, instrument];
                 })
             )
             return db.query(insertUsersQueryStr);
         })
-        .then(() => {
-            //set up query string
-            const formattedLessons = lessonsData.map((lesson) => {
-                return [lesson.user_id, lesson.lesson_date, lesson.lesson_time, lesson.length]
-            })
+        .then(({ rows: userRows }) => {
+            //rows is an array of User objects
+            userIdLookup = createRef(userRows, 'name', 'user_id');
+            const formattedLessons = replaceKeyWithId(lessonsData, userIdLookup, "name")
+                .map((lesson) => {
+                    return [lesson.user_id, lesson.lesson_date, lesson.lesson_time, lesson.length];
+                });
+
             const insertLessonsQueryString = format(
                 `
                 INSERT INTO lessons
@@ -120,14 +123,13 @@ const seed = ({ usersData,
             return db.query(insertNotesQueryString)
         })
         .then(() => {
-            //set up query string
-            const formattedPractices = practiceData.map((practice) => {
-                return [practice.practice_date, practice.practice_time, practice.length]
+            const formattedPractices = replaceKeyWithId(practiceData, userIdLookup, "user_name").map((practice) => {
+                return [practice.user_id, practice.practice_date, practice.practice_time, practice.length]
             })
             const insertPracticesQueryString = format(
                 `
                 INSERT INTO practices
-                (practice_date, practice_time, duration)
+                (user_id, practice_date, practice_time, duration)
                 VALUES
                 %L
                 RETURNING *;

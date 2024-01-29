@@ -1,15 +1,15 @@
 const usersData = [
-    { uid: 1, username: 'Damien', password: 'Password123', instrument: 'Piano' },
-    { uid: 2, username: 'Stef', password: 'SecurePassword456', instrument: 'Guitar' }
+    { name: 'Damien', email: "greenlanddev01@gmail.com", password: 'Password123', instrument: 'Piano' },
+    { name: 'Stef', email: "stef@stef.com", password: 'SecurePassword456', instrument: 'Guitar' }
 ];
 
 const lessonsData = [
-    { user_id: 1, lesson_date: '2024-01-01', lesson_time: '10:00:00', length: 60 },
-    { user_id: 1, lesson_date: '2024-01-03', lesson_time: '15:30:00', length: 45 },
-    { user_id: 1, lesson_date: '2024-01-05', lesson_time: '11:15:00', length: 75 },
-    { user_id: 2, lesson_date: '2024-01-02', lesson_time: '09:00:00', length: 60 },
-    { user_id: 2, lesson_date: '2024-01-04', lesson_time: '14:00:00', length: 45 },
-    { user_id: 2, lesson_date: '2024-01-06', lesson_time: '16:30:00', length: 60 }
+    { user_name: 'Damien', lesson_date: '2024-01-01', lesson_time: '10:00:00', length: 60 },
+    { user_name: 'Damien', lesson_date: '2024-01-03', lesson_time: '15:30:00', length: 45 },
+    { user_name: 'Damien', lesson_date: '2024-01-05', lesson_time: '11:15:00', length: 75 },
+    { user_name: 'Stef', lesson_date: '2024-01-02', lesson_time: '09:00:00', length: 60 },
+    { user_name: 'Stef', lesson_date: '2024-01-04', lesson_time: '14:00:00', length: 45 },
+    { user_name: 'Stef', lesson_date: '2024-01-06', lesson_time: '16:30:00', length: 60 }
 ];
 
 const lessonNotesData = [
@@ -26,12 +26,12 @@ const lessonNotesData = [
 ];
 
 const practiceData = [
-    { uid: 1, practice_date: '2024-01-02', practice_time: '12:45:00', length: 30 },
-    { uid: 1, practice_date: '2024-01-04', practice_time: '09:00:00', length: 60 },
-    { uid: 1, practice_date: '2024-01-06', practice_time: '14:00:00', length: 45 },
-    { uid: 2, practice_date: '2024-01-01', practice_time: '11:30:00', length: 45 },
-    { uid: 2, practice_date: '2024-01-03', practice_time: '13:00:00', length: 60 },
-    { uid: 2, practice_date: '2024-01-05', practice_time: '10:00:00', length: 30 }
+    { name: 'Damien', practice_date: '2024-01-02', practice_time: '12:45:00', length: 30 },
+    { name: 'Damien', practice_date: '2024-01-04', practice_time: '09:00:00', length: 60 },
+    { name: 'Damien', practice_date: '2024-01-06', practice_time: '14:00:00', length: 45 },
+    { name: 'Stef', practice_date: '2024-01-01', practice_time: '11:30:00', length: 45 },
+    { name: 'Stef', practice_date: '2024-01-03', practice_time: '13:00:00', length: 60 },
+    { name: 'Stef', practice_date: '2024-01-05', practice_time: '10:00:00', length: 30 }
 ];
 
 const practiceNotesData = [
