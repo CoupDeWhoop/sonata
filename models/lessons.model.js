@@ -5,7 +5,7 @@ exports.fetchAllLessons = () => {
     return db.query(
         `
         SELECT * 
-        FROM LESSONS
+        FROM LESSONS;
         `
     )
     .then(({ rows }) => {

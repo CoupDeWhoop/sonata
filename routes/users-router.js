@@ -1,5 +1,6 @@
-
 const userRouter = require('express').Router();
-const bcrypt = require('bcrypt');
+const { getUsers } = require('../controllers/users.controller.js')
+
+userRouter.get('/', getUsers)
 
 module.exports = userRouter;
