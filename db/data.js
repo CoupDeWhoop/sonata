@@ -1,6 +1,6 @@
 const usersData = [
     { name: 'Damien', email: "greenlanddev01@gmail.com", password: 'Password123', instrument: 'Piano' },
-    { name: 'Stef', email: "stef@stef.com", password: 'SecurePassword456', instrument: 'Guitar' }
+    { name: 'Mike', email: "mike@ekim.com", password: 'SecurePassword456', instrument: 'Guitar' }
 ];
 
 const lessonsData = [

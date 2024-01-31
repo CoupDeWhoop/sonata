@@ -16,7 +16,6 @@ describe('GET', () => {
                 .expect(200);
 
             const { body } = response;
-            console.log(body)
 
             expect(body.lessons).toHaveLength(6)
             for (const lesson of body.lessons) {
@@ -30,7 +29,42 @@ describe('GET', () => {
     })
 
 
-    describe('GET /api/lessons/', () => {
-        
+    describe('GET /api/users', () => {
+        it('200 - should respond with an array of user objects ', async () => {
+            const response = await request(app)
+                .get("/api/users")
+                .expect(200)
+            expect(response.body.users).toHaveLength(2)
+            response.body.users.forEach((user) => {
+                expect(user).toHaveProperty("user_id", expect.any(String))
+                expect(user).toHaveProperty("user_name", expect.any(String))
+                expect(user).toHaveProperty("user_email", expect.any(String))
+                expect(user).toHaveProperty("user_password", expect.any(String))
+                expect(user).toHaveProperty("instrument", expect.any(String))
+            }) 
+        });
     });
+})
+
+describe('POST', () => {
+
+    describe('POST /api/users', () => {
+        test('201 - responds with the added user', async () => {
+            const newUser = {user_name: "Harry", user_email: "haribo@hazbob.bob", user_password: "testPassword1234", instrument: "Harmonica"}
+            const response = await request(app)
+                .post("/api/users")
+                .send(newUser)
+                .expect(201);
+
+            const { body: { user } } = response;
+            expect(user).toMatchObject({
+                user_id: expect.any(String),
+                user_name: "Harry",
+                user_email: "haribo@hazbob.bob", 
+                user_password: expect.any(String), 
+                instrument: "Harmonica"
+            })
+        });
+    })
+
 })

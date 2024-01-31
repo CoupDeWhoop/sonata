@@ -1,7 +1,7 @@
 const { v4: uuidv4 } = require('uuid');
 
-exports.generateUserUUIDs = (usersData) => {
-    return usersData.map(user => ({
+exports.generateUserUUIDs = (userData) => {
+    return userData.map(user => ({
         ...user,
         user_id: uuidv4() // Generate UUID for each user
     }));
