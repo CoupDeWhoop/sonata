@@ -14,7 +14,6 @@ exports.postUser = (req, res, next) => {
             res.status(201).send({user});
         })
         .catch((err) => {
-            console.log(err)
             return next(err)
         });
 }

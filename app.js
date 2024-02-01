@@ -12,4 +12,10 @@ app.use(cookieParser());
 
 app.use('/api', apiRouter);
 
+app.use((err, req, res, next) => {
+    if (err.status) {
+        res.status(err.status).send(err)
+    }
+});
+
 module.exports = app;

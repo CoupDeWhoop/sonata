@@ -17,7 +17,6 @@ exports.insertUser = (userObj) => {
     const { user_id, user_name, user_email, user_password, instrument } = addedUserId[0];
 
     return bcrypt.hash(user_password, 10).then((hashedPassword) => {
-            console.log(hashedPassword)
             return db.query(`
                 INSERT INTO users 
                 (user_id, user_name, user_email, user_password, instrument)
@@ -26,7 +25,6 @@ exports.insertUser = (userObj) => {
                 `, [user_id, user_name, user_email, hashedPassword, instrument])
         })
         .then(({rows}) => {
-            console.log(rows)
             return rows[0];
         })
 }

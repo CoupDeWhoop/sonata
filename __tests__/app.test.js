@@ -32,7 +32,7 @@ describe('GET', () => {
     describe('GET /api/users', () => {
         it('200 - should respond with an array of user objects ', async () => {
             const response = await request(app)
-                .get("/api/users")
+                .get('/api/users')
                 .expect(200)
             expect(response.body.users).toHaveLength(2)
             response.body.users.forEach((user) => {
@@ -47,6 +47,27 @@ describe('GET', () => {
 })
 
 describe('POST', () => {
+
+    describe('POST /api/login', () => {
+        test('200 - user login succesful with valid credentials', () => {
+
+        })
+        test('401 - invalid email provided during login', async() => {
+            const credentials = {
+                email: 'test@test.com',
+                password: 'Password123'
+            };
+
+            const response = await request(app)
+                .post("/api/login")
+                .send(credentials)
+                .expect(401)
+                    
+            expect(response.body.msg).toBe('Email is incorrect')
+        })
+
+    });
+
 
     describe('POST /api/users', () => {
         test('201 - responds with the added user', async () => {

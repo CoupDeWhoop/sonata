@@ -22,7 +22,7 @@ const seed = ({ usersData,
                 CREATE TABLE users (
                     user_id uuid PRIMARY KEY NOT NULL,
                     user_name VARCHAR NOT NULL,
-                    user_email VARCHAR(256) NOT NULL,
+                    user_email VARCHAR(256) NOT NULL UNIQUE,
                     user_password VARCHAR(255) NOT NULL,
                     instrument VARCHAR
                 );
