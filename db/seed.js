@@ -1,13 +1,13 @@
 const db = require('./connection.js');
 const format = require('pg-format');
-const { generateUserUUIDs, createRef, replaceKeyWithId } = require('./utils.js')
+const { generateUserUUIDs, createRef, replaceKeyWithId, hashPasswords } = require('../utils/seed-utils.js')
 
 let userIdLookup = {};
 
-const seed = ({ usersData,
+const seed = ({ usersData,  
         lessonsData,
         lessonNotesData,
-        practiceData,
+        practisesData,
         practiceNotesData
     }) => {
     return db
@@ -22,7 +22,7 @@ const seed = ({ usersData,
                 CREATE TABLE users (
                     user_id uuid PRIMARY KEY NOT NULL,
                     user_name VARCHAR NOT NULL,
-                    user_email VARCHAR(256) NOT NULL UNIQUE,
+                    user_email VARCHAR(255) NOT NULL UNIQUE,
                     user_password VARCHAR(255) NOT NULL,
                     instrument VARCHAR
                 );
@@ -71,13 +71,16 @@ const seed = ({ usersData,
         // then hydrate? the tables
         .then(() => {
             const usersWithAddedUUIDs = generateUserUUIDs(usersData);
+            return hashPasswords(usersWithAddedUUIDs)
+        })
+        .then((usersWithHashedPasswords) => {
             const insertUsersQueryStr = format(
                 `
                 INSERT INTO users (user_id, user_name, user_email, user_password, instrument) 
                 VALUES %L RETURNING *;
                 `,
                 //convert array of objects to array of simple user-data arrays
-                usersWithAddedUUIDs.map(({ user_id, name, email, password, instrument }) => {
+                usersWithHashedPasswords.map(({ user_id, name, email, password, instrument }) => {
                     return [user_id, name, email, password, instrument];
                 })
             )
@@ -85,7 +88,7 @@ const seed = ({ usersData,
         })
         .then(({ rows: userRows }) => {
             //rows is an array of User objects
-            userIdLookup = createRef(userRows, 'name', 'user_id');
+            userIdLookup = createRef(userRows, 'name', 'user_id'); // updates userIDLookup globally
             const formattedLessons = replaceKeyWithId(lessonsData, userIdLookup, "name")
                 .map((lesson) => {
                     return [lesson.user_id, lesson.lesson_date, lesson.lesson_time, lesson.length];
@@ -123,7 +126,7 @@ const seed = ({ usersData,
             return db.query(insertNotesQueryString)
         })
         .then(() => {
-            const formattedPractices = replaceKeyWithId(practiceData, userIdLookup, "user_name").map((practice) => {
+            const formattedPractises = replaceKeyWithId(practisesData, userIdLookup, "user_name").map((practice) => {
                 return [practice.user_id, practice.practice_date, practice.practice_time, practice.length]
             })
             const insertPracticesQueryString = format(
@@ -134,7 +137,7 @@ const seed = ({ usersData,
                 %L
                 RETURNING *;
                 `,
-                formattedPractices
+                formattedPractises
             );
 
             return db.query(insertPracticesQueryString);

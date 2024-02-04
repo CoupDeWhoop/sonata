@@ -1,5 +1,5 @@
 const db = require('../db/connection.js');
-const { generateUserUUIDs } = require('../db/utils.js')
+const { generateUserUUIDs } = require('../utils/seed-utils.js')
 const bcrypt = require('bcrypt');
  
 exports.fetchAllUsers = () => {

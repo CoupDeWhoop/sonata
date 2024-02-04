@@ -65,6 +65,20 @@ describe('POST', () => {
                     
             expect(response.body.msg).toBe('Email is incorrect')
         })
+        test('401 - incorrect password provided during login', async() => {
+            const credentials = {
+                email: 'testemail@test.com',
+                password: 'Password'
+            };
+
+            const response = await request(app)
+                .post("/api/login")
+                .send(credentials)
+                .expect(401)
+ 
+            const { body : { msg } } = response;
+            expect(msg).toBe("Incorrect Password")
+        })
 
     });
 

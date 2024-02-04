@@ -25,7 +25,7 @@ const lessonNotesData = [
     { lesson_id: 6, note_number: 1, notes: 'Reviewed previous lesson.' }
 ];
 
-const practiceData = [
+const practisesData = [
     { name: 'Damien', practice_date: '2024-01-02', practice_time: '12:45:00', length: 30 },
     { name: 'Damien', practice_date: '2024-01-04', practice_time: '09:00:00', length: 60 },
     { name: 'Damien', practice_date: '2024-01-06', practice_time: '14:00:00', length: 45 },
@@ -51,7 +51,7 @@ module.exports = {
     usersData,
     lessonsData,
     lessonNotesData,
-    practiceData,
+    practisesData,
     practiceNotesData
 };
   
