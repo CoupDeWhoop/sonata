@@ -1,8 +1,21 @@
 const express = require('express');
-const { getLessons } = require('./controllers/lessons.controller')
+const cors = require('cors');
+const cookieParser = require('cookie-parser');
+const apiRouter = require('./routes/api-router.js')
 
 const app = express();
+const corsOptions = {credentials: true, origin: process.env.URL || '*'};
 
-app.get('/api/lessons', getLessons);
+app.use(cors(corsOptions));
+app.use(express.json());
+app.use(cookieParser());
+
+app.use('/api', apiRouter);
+
+app.use((err, req, res, next) => {
+    if (err.status) {
+        res.status(err.status).send(err)
+    }
+});
 
 module.exports = app;
