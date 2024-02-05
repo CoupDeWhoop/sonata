@@ -49,8 +49,20 @@ describe('GET', () => {
 describe('POST', () => {
 
     describe('POST /api/login', () => {
-        test('200 - user login succesful with valid credentials', () => {
-
+        test('200 - user login succesful with valid credentials', async() => {
+            const credentials = {
+                email: 'testemail@test.com',
+                password: 'Password123'
+            };
+            const response = await request(app)
+                .post("/api/login")
+                .send(credentials)
+                .expect(200)
+            
+            expect(response.body.tokens).toMatchObject({
+                accessToken: expect.any(String),
+                refreshToken: expect.any(String)
+            })
         })
         test('401 - invalid email provided during login', async() => {
             const credentials = {
