@@ -8,7 +8,6 @@ exports.postLogin = (req, res, next) => {
             res.status(200).send({ tokens });
         })
         .catch((err) => {
-            console.log(err)
             next(err)
         });
 }
