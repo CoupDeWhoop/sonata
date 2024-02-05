@@ -1,8 +1,8 @@
 const authRouter = require('express').Router();
-const { postLogin } = require('../controllers/auth.controller.js');
+const { postLogin, getRefreshToken } = require('../controllers/auth.controller.js');
 
 authRouter.post('/login', postLogin);
 
-// authRouter.get()
+authRouter.get('/refresh-token', getRefreshToken);
 
 module.exports = authRouter;

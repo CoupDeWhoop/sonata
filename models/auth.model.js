@@ -1,6 +1,7 @@
 const db = require('../db/connection.js');
 const bcrypt = require('bcrypt');
 const { jwtTokens } = require('../utils/jwt-helpers.js')
+const jwt = require('jsonwebtoken')
 
 exports.authenticateUser = (email, password) => {
     let user;
@@ -20,3 +21,23 @@ exports.authenticateUser = (email, password) => {
             return jwtTokens(user)
         })
 }
+
+exports.verifyRefreshToken = (refreshToken) => {
+    return new Promise((resolve, reject) => {
+        if (!refreshToken) {
+            reject({status: 401, msg: 'Null refresh token'});
+        }
+        jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, decodedUser) => {
+            console.log("verify in model")
+            if(err) {
+                reject({status: 403, error: err.message});
+            } else {
+                let tokens = jwtTokens(decodedUser); //renews tokens
+                resolve(tokens);
+            }
+
+        })
+    })
+}
+
+
