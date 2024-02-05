@@ -11,7 +11,7 @@ afterAll(() => db.end());
 
 describe('Authorization', () => {
     
-    describe('POST /api/login', () => {
+    describe('POST /api/auth/login', () => {
         test('200 - user login succesful with valid credentials', async() => {
             const credentials = {
                 email: 'testemail@test.com',
