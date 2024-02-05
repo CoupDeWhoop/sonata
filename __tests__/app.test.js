@@ -55,7 +55,7 @@ describe('POST', () => {
                 password: 'Password123'
             };
             const response = await request(app)
-                .post("/api/login")
+                .post("/api/auth/login")
                 .send(credentials)
                 .expect(200)
             
@@ -71,7 +71,7 @@ describe('POST', () => {
             };
 
             const response = await request(app)
-                .post("/api/login")
+            .post("/api/auth/login")
                 .send(credentials)
                 .expect(401)
                     
@@ -84,7 +84,7 @@ describe('POST', () => {
             };
 
             const response = await request(app)
-                .post("/api/login")
+            .post("/api/auth/login")
                 .send(credentials)
                 .expect(401)
  

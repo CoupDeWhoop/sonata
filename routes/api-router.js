@@ -6,7 +6,8 @@ const authRouter = require('./auth-router.js');
 
 const apiRouter = express.Router();
 
-apiRouter.use('/login', authRouter);
+
+apiRouter.use('/auth', authRouter);
 apiRouter.use('/users', userRouter);
 apiRouter.use('/lessons', lessonRouter);
 
