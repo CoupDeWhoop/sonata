@@ -1,15 +1,15 @@
 const usersData = [
     { name: 'Damien', email: "testemail@test.com", password: 'Password123', instrument: 'Piano' },
-    { name: 'Mike', email: "mike@ekim.com", password: 'SecurePassword456', instrument: 'Guitar' }
+    { name: 'Mike', email: process.env.ADMIN_EMAIL, password: 'AdminPassword', instrument: 'Guitar' },
 ];
 
 const lessonsData = [
     { user_name: 'Damien', lesson_date: '2024-01-01', lesson_time: '10:00:00', length: 60 },
     { user_name: 'Damien', lesson_date: '2024-01-03', lesson_time: '15:30:00', length: 45 },
     { user_name: 'Damien', lesson_date: '2024-01-05', lesson_time: '11:15:00', length: 75 },
-    { user_name: 'Stef', lesson_date: '2024-01-02', lesson_time: '09:00:00', length: 60 },
-    { user_name: 'Stef', lesson_date: '2024-01-04', lesson_time: '14:00:00', length: 45 },
-    { user_name: 'Stef', lesson_date: '2024-01-06', lesson_time: '16:30:00', length: 60 }
+    { user_name: 'Mike', lesson_date: '2024-01-02', lesson_time: '09:00:00', length: 60 },
+    { user_name: 'Mike', lesson_date: '2024-01-04', lesson_time: '14:00:00', length: 45 },
+    { user_name: 'Mike', lesson_date: '2024-01-06', lesson_time: '16:30:00', length: 60 }
 ];
 
 const lessonNotesData = [

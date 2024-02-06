@@ -4,8 +4,6 @@ const db = require('../db/connection');
 const seed = require('../db/seed')
 const data = require('../db/data')
 
-let accessTokens;
-
 beforeEach(() => seed(data));
 afterAll(() => db.end());
 

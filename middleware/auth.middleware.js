@@ -11,3 +11,10 @@ exports.authenticateToken = (req, res, next) => {
         next();
     })
 }
+
+exports.requireAdmin = (req, res, next) => {
+    if(req.user.role !== 'admin') {
+        return res.status(403).json({error: 'Forbidden: Admin privileges required'})
+    }
+    next()
+}

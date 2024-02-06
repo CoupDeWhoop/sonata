@@ -3,14 +3,12 @@ const request = require('supertest');
 const db = require('../db/connection');
 const seed = require('../db/seed')
 const data = require('../db/data')
+const jwt = require('jsonwebtoken')
 
 let accessTokens;
 
 beforeEach(() => seed(data));
 afterAll(() => db.end());
-
-
-
 
 beforeEach(async() => {
     const credentials = {
@@ -21,18 +19,25 @@ beforeEach(async() => {
         .post("/api/auth/login")
         .send(credentials)
 
-    tokens = response.body.tokens
+    accessTokens = response.body.tokens
 })
 
 describe('GET', () => {
-
-    describe('GET /api/lessons', () => {
-        test('200 - responds with an array of lessons data', async () => {
+    describe('GET /api/lessons/admin', () => {
+        test('200 - responds with an array of all lessons data for admininstrator', async () => {
+            const credentials = {
+                email: process.env.ADMIN_EMAIL,
+                password: 'AdminPassword'
+            };
+            const adminResponse = await request(app)
+                .post("/api/auth/login")
+                .send(credentials);
+            accessTokens = adminResponse.body.tokens
+            
             const response = await request(app)
-                .get("/api/lessons")
-                .set('Authorization', `Bearer ${tokens.accessToken}`)
+                .get("/api/lessons/admin")
+                .set('Authorization', `Bearer ${accessTokens.accessToken}`)
                 .expect(200);
-
             const { body } = response;
 
             expect(body.lessons).toHaveLength(6)
@@ -44,14 +49,49 @@ describe('GET', () => {
                 expect(lesson.duration).toEqual(expect.any(Number));
             }
         });
+
+        test('403 - rejects non admin user for GET all lessons ', async () => {
+            const response = await request(app)
+                .get("/api/lessons/admin")
+                .set('Authorization', `Bearer ${accessTokens.accessToken}`)
+                .expect(403);
+
+            const { body } = response;
+            expect(body.error).toBe("Forbidden: Admin privileges required")
+
+            })
     })
+
+    describe('GET /api/lessons', () => {
+        test('200 - it should respond with an array of lessons associated with the logged-in user', async() => {
+            const response = await request(app)
+                .get("/api/lessons")
+                .set('Authorization', `Bearer ${accessTokens.accessToken}`)
+                .expect(200);
+                
+            const decodedPayload = jwt.decode(accessTokens.accessToken);
+            const { body } = response;
+            expect(body.lessons).toHaveLength(3)
+            body.lessons.forEach((lesson) => {
+                expect(lesson).toMatchObject({
+                    lesson_id: expect.any(Number),
+                    user_id: decodedPayload.user_id,
+                    lesson_date: expect.any(String),
+                    lesson_time: expect.any(String),
+                    duration: expect.any(Number)
+                })
+            })
+
+
+        });
+    });
 
 
     describe('GET /api/users', () => {
-        it('200 - should respond with an array of user objects ', async () => {
+        test('200 - should respond with an array of user objects ', async () => {
             const response = await request(app)
                 .get('/api/users')
-                .set('Authorization', `Bearer ${tokens.accessToken}`)
+                .set('Authorization', `Bearer ${accessTokens.accessToken}`)
                 .expect(200)
             expect(response.body.users).toHaveLength(2)
             response.body.users.forEach((user) => {

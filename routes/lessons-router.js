@@ -1,7 +1,10 @@
 const lessonRouter = require('express').Router();
-const { getLessons } = require('../controllers/lessons.controller.js');
+const { getAllLessons, getLessons } = require('../controllers/lessons.controller.js');
+const { authenticateToken, requireAdmin } = require('../middleware/auth.middleware.js');
 
-lessonRouter.get('/', getLessons);
+lessonRouter.get('/admin', authenticateToken, requireAdmin, getAllLessons);
+lessonRouter.get('/', authenticateToken, getLessons);
+
 
 
 module.exports = lessonRouter;

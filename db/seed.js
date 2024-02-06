@@ -88,8 +88,8 @@ const seed = ({ usersData,
         })
         .then(({ rows: userRows }) => {
             //rows is an array of User objects
-            userIdLookup = createRef(userRows, 'name', 'user_id'); // updates userIDLookup globally
-            const formattedLessons = replaceKeyWithId(lessonsData, userIdLookup, "name")
+            userIdLookup = createRef(userRows, 'user_name', 'user_id'); // updates userIDLookup globally
+            const formattedLessons = replaceKeyWithId(lessonsData, userIdLookup, "user_name")
                 .map((lesson) => {
                     return [lesson.user_id, lesson.lesson_date, lesson.lesson_time, lesson.length];
                 });
