@@ -1,16 +1,42 @@
 {
-    "GET /api": {
-      "description": "serves up a json representation of all the available endpoints of the api"
-    },
-    "GET /api/lessons": {
-        "description": "serves an array of all lessons for the given user",
-        "queries": [],
-        "exampleResponse": {
-          "topics": [{ "slug": "football", "description": "Footie!" }]
-        }
-    },
+  "GET /api": {
+    "description": "serves up a json representation of all the available endpoints of the api"
+  },
+  "GET /api/lessons": {
+      "description": "serves an array of all lessons for the given user",
+      "queries": [],
+      "exampleResponse": {
+        "lessons": [{
+          "lesson_id": 1,
+          "user_id": "33457cf0-2988-4c4e-83bc-fda7cd63e459",
+          "lesson_date": "2024-01-01T00:00:00.000Z",
+          "lesson_time": "10:00:00",
+          "duration": 60
+        }]
+      }
+  },
+  
+  "ADMIN only endpoints": {
     "GET /api/users": {
-      "description": ""
+      "description": "serves an array of all users in the database. Password encrypted",
+      "exampleResponse": {
+        "user_id": "8ad9be82-275c-48fd-ab2a-5272240509ae",
+        "user_name": "Damien",
+        "user_email": "testemail@test.com",
+        "user_password": "$2b$10$2dEbtqO2hCIaB1K473Or0.Idoll1INSk57QEulDPOtIkcnWhVWQwq",
+        "instrument": "Piano"
+      }
+    },
+    "GET /api/lessons/admin": {
+      "description": "Serves up an array of all lesson objects stored on database. Administrator privileges required.",
+      "queries": [],
+      "exampleResponse": {
+        "lesson_id": 1,
+        "user_id": "e5fa6aac-2a92-4cc5-969c-20d437c94856",
+        "lesson_date": "2024-01-01T00:00:00.000Z",
+        "lesson_time": "10:00:00",
+        "duration": 60
+      }
     }
-
+  }
 }

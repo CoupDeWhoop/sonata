@@ -18,4 +18,8 @@ app.use((err, req, res, next) => {
     }
 });
 
+app.all('/*', (req, res, next) => {
+    res.status(404).send({ msg: 'Path not found.' });
+})
+
 module.exports = app;
