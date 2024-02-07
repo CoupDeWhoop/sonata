@@ -23,6 +23,20 @@ beforeEach(async() => {
 })
 
 describe('GET', () => {
+
+    describe('GET /*', () => {
+        test('404 path not found', () => {
+        return request(app)
+        .get("/api/westworld")
+        .expect(404)
+        .then(({body}) => {
+            expect(body.msg).toBe('Path not found.')
+
+        });
+
+        })
+    });
+
     describe('GET /api/lessons', () => {
         test('200 - it should respond with an array of lessons associated with the logged-in user', async() => {
             const response = await request(app)
@@ -73,6 +87,50 @@ describe('GET', () => {
             })
         });
     });
+
+    describe('GET /api/lessons/notes/:lesson_id', () => {
+        test('200 - should respond with a array of notes associated with given lesson and user', async() => {
+            const response = await request(app)
+                .get('/api/lessons/notes/2')
+                .set('Authorization', `Bearer ${accessTokens.accessToken}`)
+                .expect(200)
+
+            const { body } = response; 
+            expect(body.notes).toHaveLength(3)
+            body.notes.forEach((note) => {
+                expect(note).toMatchObject({
+                    note_id: expect.any(Number),
+                    lesson_id: 2,
+                    notes: expect.any(String),
+                    lesson_date: expect.any(String),
+                    lesson_time: expect.any(String),
+                    duration: expect.any(Number)
+                })
+            })
+        });
+        test('404 - lesson_id not found', async() => {
+            const response = await request(app)
+                .get("/api/lessons/notes/108")
+                .set('Authorization', `Bearer ${accessTokens.accessToken}`)
+                .expect(404)
+
+            const { body } = response;
+            expect(body.msg).toBe('Lesson not found') 
+        });
+
+        test('status 400 - article_id is a number', async() => {
+            const response = await request(app)
+                .get("/api/lessons/notes/i2a3m")
+                .set('Authorization', `Bearer ${accessTokens.accessToken}`)
+                .expect(400)
+
+            const { body } = response;
+            expect(body.msg).toBe('Invalid request') 
+            })
+    });
+
+
+    // describe('GET /api')
 
 })
 

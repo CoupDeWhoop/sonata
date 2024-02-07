@@ -16,18 +16,29 @@
       }
   },
   "GET /api/lessons/notes": {
-      "decription": "serves as array of all notes for the given user",
-      "queries": [],
-      "exampleResponse": {
-        "note_id": 5,
-        "notes": "Addressed fingering techniques.",
-        "lesson_id": 2,
-        "lesson_date": "2024-01-03T00:00:00.000Z",
-        "lesson_time": "15:30:00",
-        "duration": 45
-      }
+    "decription": "serves an array of all notes for the given user",
+    "queries": [],
+    "exampleResponse": {
+      "note_id": 5,
+      "notes": "Addressed fingering techniques.",
+      "lesson_id": 2,
+      "lesson_date": "2024-01-03T00:00:00.000Z",
+      "lesson_time": "15:30:00",
+      "duration": 45
+    }
   },
-  
+  "GET /api/lessons/notes/:lesson_id": {
+    "decription": "serves an array of all lesson notes for the given lesson and user",
+    "queries": [],
+    "exampleResponse": {
+      "note_id": 5,
+      "notes": "Addressed fingering techniques.",
+      "lesson_id": 2,
+      "lesson_date": "2024-01-03T00:00:00.000Z",
+      "lesson_time": "15:30:00",
+      "duration": 45
+    }
+  },
   "ADMIN only endpoints": {
     "GET /api/users": {
       "description": "serves an array of all users in the database. Password encrypted",

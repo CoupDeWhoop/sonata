@@ -19,9 +19,9 @@ exports.getUserLessons = (req, res, next) => {
 
 exports.getUserLessonNotes = (req, res, next) => {
     const { user_id } = req.user;
-    fetchUserLessonNotes(user_id)
+    const { lesson_id } = req.params
+    fetchUserLessonNotes(user_id, lesson_id)
         .then((notes) => {
-            console.log(notes)
             res.status(200).send({notes})
         })
         .catch((err) => next(err))
