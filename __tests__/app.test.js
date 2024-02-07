@@ -42,8 +42,35 @@ describe('GET', () => {
                     duration: expect.any(Number)
                 })
             })
+        });
+        test('400: GET request reponds with appropriate status and error when given invalid token', async() => {
+            const response = await request(app)
+                .get("/api/lessons")
+                .set('Authorization', `Bearer saioashisohaio`)
+                .expect(403);
+            expect( response.body.error ).toBe('jwt malformed')
+        });
+    });
 
+    describe('GET /api/lessons/notes', () => {
+        test('200 - It should respond with an array of all lesson_notes associated with the logged-in user', async() => {
+            const response = await request(app)
+                .get('/api/lessons/notes')
+                .set('Authorization', `Bearer ${accessTokens.accessToken}`)
+                .expect(200)
 
+            const { body } = response; 
+            expect(body.notes).toHaveLength(7)
+            body.notes.forEach((note) => {
+                expect(note).toMatchObject({
+                    note_id: expect.any(Number),
+                    lesson_id: expect.any(Number),
+                    notes: expect.any(String),
+                    lesson_date: expect.any(String),
+                    lesson_time: expect.any(String),
+                    duration: expect.any(Number)
+                })
+            })
         });
     });
 
