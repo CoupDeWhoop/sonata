@@ -5,6 +5,7 @@ exports.getUserPractises = (req, res, next) => {
 
     fetchUserPractises(user_id)
         .then((practises) => {
+            console.log(practises)
             res.status(200).send({ practises })
         })
         .catch((err) => {

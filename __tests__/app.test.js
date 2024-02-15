@@ -134,6 +134,18 @@ describe('GET', () => {
                 .get("/api/practises")
                 .set('Authorization', `Bearer ${accessTokens.accessToken}`)
                 .expect(200);
+
+            const decodedPayload = jwt.decode(accessTokens.accessToken);
+            expect(response.body.practises).toHaveLength(3)
+            response.body.practises.forEach(practice => {
+                expect(practice).toMatchObject({
+                    practice_id: expect.any(Number),
+                    user_id: decodedPayload.user_id,
+                    practice_date: expect.any(String),
+                    practice_time: expect.any(String),
+                    duration: expect.any(Number)
+                })
+            })
         });
     });
 
