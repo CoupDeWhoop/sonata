@@ -29,9 +29,9 @@ const practisesData = [
     { name: 'Damien', practice_date: '2024-01-02', practice_time: '12:45:00', length: 30 },
     { name: 'Damien', practice_date: '2024-01-04', practice_time: '09:00:00', length: 60 },
     { name: 'Damien', practice_date: '2024-01-06', practice_time: '14:00:00', length: 45 },
-    { name: 'Stef', practice_date: '2024-01-01', practice_time: '11:30:00', length: 45 },
-    { name: 'Stef', practice_date: '2024-01-03', practice_time: '13:00:00', length: 60 },
-    { name: 'Stef', practice_date: '2024-01-05', practice_time: '10:00:00', length: 30 }
+    { name: 'Mike', practice_date: '2024-01-01', practice_time: '11:30:00', length: 45 },
+    { name: 'Mike', practice_date: '2024-01-03', practice_time: '13:00:00', length: 60 },
+    { name: 'Mike', practice_date: '2024-01-05', practice_time: '10:00:00', length: 30 }
 ];
 
 const practiceNotesData = [

@@ -126,7 +126,7 @@ const seed = ({ usersData,
             return db.query(insertNotesQueryString)
         })
         .then(() => {
-            const formattedPractises = replaceKeyWithId(practisesData, userIdLookup, "user_name").map((practice) => {
+            const formattedPractises = replaceKeyWithId(practisesData, userIdLookup, "name").map((practice) => {
                 return [practice.user_id, practice.practice_date, practice.practice_time, practice.length]
             })
             const insertPracticesQueryString = format(
