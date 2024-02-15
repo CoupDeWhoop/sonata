@@ -13,7 +13,7 @@ const seed = ({ usersData,
     return db
         // drop in reverse order
         .query('DROP TABLE IF EXISTS practice_notes;')
-        .then(() => db.query('DROP TABLE IF EXISTS practices;'))
+        .then(() => db.query('DROP TABLE IF EXISTS practises;'))
         .then(() => db.query('DROP TABLE IF EXISTS lesson_notes;'))
         .then(() => db.query('DROP TABLE IF EXISTS lessons;'))
         .then(() => db.query('DROP TABLE IF EXISTS users'))
@@ -50,7 +50,7 @@ const seed = ({ usersData,
         })
         .then(() => {
             return db.query(`
-                CREATE TABLE practices (
+                CREATE TABLE practises (
                     practice_id SERIAL PRIMARY KEY,
                     user_id uuid REFERENCES users(user_id),
                     practice_date DATE,
@@ -63,7 +63,7 @@ const seed = ({ usersData,
             return db.query(`
                 CREATE TABLE practice_notes (
                     note_id SERIAL PRIMARY KEY,
-                    practice_id INT REFERENCES practices(practice_id),
+                    practice_id INT REFERENCES practises(practice_id),
                     notes VARCHAR
                 );
             `)
@@ -131,7 +131,7 @@ const seed = ({ usersData,
             })
             const insertPracticesQueryString = format(
                 `
-                INSERT INTO practices
+                INSERT INTO practises
                 (user_id, practice_date, practice_time, duration)
                 VALUES
                 %L

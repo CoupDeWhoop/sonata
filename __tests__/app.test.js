@@ -117,7 +117,6 @@ describe('GET', () => {
             const { body } = response;
             expect(body.msg).toBe('Lesson not found') 
         });
-
         test('status 400 - article_id is a number', async() => {
             const response = await request(app)
                 .get("/api/lessons/notes/i2a3m")
@@ -126,9 +125,17 @@ describe('GET', () => {
 
             const { body } = response;
             expect(body.msg).toBe('Invalid request') 
-            })
+        })
     });
 
+    describe('GET /api/practises', () => {
+        test('200 - should respond with an array of practice sessions associated with the logged-in user', async() => {
+            const response = await request(app)
+                .get("/api/practises")
+                .set('Authorization', `Bearer ${accessTokens.accessToken}`)
+                .expect(200);
+        });
+    });
 
     // describe('GET /api')
 
