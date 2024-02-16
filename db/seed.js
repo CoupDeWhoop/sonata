@@ -1,6 +1,6 @@
 const db = require('./connection.js');
 const format = require('pg-format');
-const { generateUserUUIDs, createRef, replaceKeyWithId, hashPasswords } = require('../utils/seed-utils.js')
+const { generateUserUUIDs, createRef, replaceKeyWithId, hashPasswords } = require('../utils/seed-utils.js');
 
 let userIdLookup = {};
 
@@ -33,28 +33,26 @@ const seed = ({ usersData,
                 CREATE TABLE lessons (
                     lesson_id SERIAL PRIMARY KEY,
                     user_id uuid REFERENCES users(user_id) NOT NULL,
-                    lesson_date DATE,
-                    lesson_time TIME,
+                    lesson_timestamp TIMESTAMP,
                     duration INT DEFAULT 20
                 );
             `)
         })
         .then(() => {
             return db.query(`
-            CREATE TABLE lesson_notes (
-                note_id SERIAL PRIMARY KEY,
-                lesson_id INT REFERENCES lessons(lesson_id),
-                notes VARCHAR
-            );
-        `);
+                CREATE TABLE lesson_notes (
+                    note_id SERIAL PRIMARY KEY,
+                    lesson_id INT REFERENCES lessons(lesson_id),
+                    notes VARCHAR
+                );
+            `);
         })
         .then(() => {
             return db.query(`
                 CREATE TABLE practises (
                     practice_id SERIAL PRIMARY KEY,
                     user_id uuid REFERENCES users(user_id),
-                    practice_date DATE,
-                    practice_time TIME,
+                    practice_timestamp TIMESTAMP,
                     duration INT DEFAULT 5
                 );
             `)
@@ -91,13 +89,13 @@ const seed = ({ usersData,
             userIdLookup = createRef(userRows, 'user_name', 'user_id'); // updates userIDLookup globally
             const formattedLessons = replaceKeyWithId(lessonsData, userIdLookup, "user_name")
                 .map((lesson) => {
-                    return [lesson.user_id, lesson.lesson_date, lesson.lesson_time, lesson.length];
+                    return [lesson.user_id, lesson.lesson_timestamp, lesson.length];
                 });
 
             const insertLessonsQueryString = format(
                 `
                 INSERT INTO lessons
-                (user_id, lesson_date, lesson_time, duration)
+                (user_id, lesson_timestamp, duration)
                 VALUES
                 %L
                 RETURNING *;
@@ -127,12 +125,12 @@ const seed = ({ usersData,
         })
         .then(() => {
             const formattedPractises = replaceKeyWithId(practisesData, userIdLookup, "name").map((practice) => {
-                return [practice.user_id, practice.practice_date, practice.practice_time, practice.length]
+                return [practice.user_id, practice.practice_timestamp, practice.length]
             })
             const insertPracticesQueryString = format(
                 `
                 INSERT INTO practises
-                (user_id, practice_date, practice_time, duration)
+                (user_id, practice_timestamp, duration)
                 VALUES
                 %L
                 RETURNING *;

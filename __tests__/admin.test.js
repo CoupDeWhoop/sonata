@@ -32,10 +32,7 @@ describe('GET /api/lessons/admin', () => {
 
         expect(body.lessons).toHaveLength(6)
         for (const lesson of body.lessons) {
-            expect(lesson).toHaveProperty("lesson_date", expect.any(String))
-            // this time cheking might be unneccessary!
-            const isValidTime = /^(\d{2}):(\d{2}):(\d{2})$/.test(lesson.lesson_time)
-            expect(isValidTime).toBe(true);
+            expect(lesson).toHaveProperty("lesson_timestamp", expect.any(String))
             expect(lesson.duration).toEqual(expect.any(Number));
         }
     });
