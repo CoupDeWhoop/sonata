@@ -4,12 +4,12 @@ const usersData = [
 ];
 
 const lessonsData = [
-    { user_name: 'Damien', lesson_date: '2024-01-01', lesson_time: '10:00:00', length: 60 },
-    { user_name: 'Damien', lesson_date: '2024-01-03', lesson_time: '15:30:00', length: 45 },
-    { user_name: 'Damien', lesson_date: '2024-01-05', lesson_time: '11:15:00', length: 75 },
-    { user_name: 'Mike', lesson_date: '2024-01-02', lesson_time: '09:00:00', length: 60 },
-    { user_name: 'Mike', lesson_date: '2024-01-04', lesson_time: '14:00:00', length: 45 },
-    { user_name: 'Mike', lesson_date: '2024-01-06', lesson_time: '16:30:00', length: 60 }
+    { user_name: 'Damien', lesson_timestamp: '2024-01-01 10:00:00', length: 60 },
+    { user_name: 'Damien', lesson_timestamp: '2024-01-03 15:30:00', length: 45 },
+    { user_name: 'Damien', lesson_timestamp: '2024-01-05 11:15:00', length: 75 },
+    { user_name: 'Mike', lesson_timestamp: '2024-01-02 09:00:00', length: 60 },
+    { user_name: 'Mike', lesson_timestamp: '2024-01-04 14:00:00', length: 45 },
+    { user_name: 'Mike', lesson_timestamp: '2024-01-06 16:30:00', length: 60 }
 ];
 
 const lessonNotesData = [
@@ -26,12 +26,12 @@ const lessonNotesData = [
 ];
 
 const practisesData = [
-    { name: 'Damien', practice_date: '2024-01-02', practice_time: '12:45:00', length: 30 },
-    { name: 'Damien', practice_date: '2024-01-04', practice_time: '09:00:00', length: 60 },
-    { name: 'Damien', practice_date: '2024-01-06', practice_time: '14:00:00', length: 45 },
-    { name: 'Mike', practice_date: '2024-01-01', practice_time: '11:30:00', length: 45 },
-    { name: 'Mike', practice_date: '2024-01-03', practice_time: '13:00:00', length: 60 },
-    { name: 'Mike', practice_date: '2024-01-05', practice_time: '10:00:00', length: 30 }
+    { name: 'Damien', practice_timestamp: '2024-01-02 12:45:00', length: 30 },
+    { name: 'Damien', practice_timestamp: '2024-01-04 09:00:00', length: 60 },
+    { name: 'Damien', practice_timestamp: '2024-01-06 14:00:00', length: 45 },
+    { name: 'Mike', practice_timestamp: '2024-01-01 11:30:00', length: 45 },
+    { name: 'Mike', practice_timestamp: '2024-01-03 13:00:00', length: 60 },
+    { name: 'Mike', practice_timestamp: '2024-01-05 10:00:00', length: 30 }
 ];
 
 const practiceNotesData = [

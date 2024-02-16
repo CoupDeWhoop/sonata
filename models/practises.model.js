@@ -15,8 +15,7 @@ exports.fetchUserPracticeNotes = (user_id, practice_id) => {
         practice_notes.practice_id,
         practice_notes.note_id,
         practice_notes.notes,
-        practises.practice_date,
-        practises.practice_time
+        practises.practice_timestamp
         FROM practises
         INNER JOIN practice_notes
         ON practises.practice_id = practice_notes.practice_id
