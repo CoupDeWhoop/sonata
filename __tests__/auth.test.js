@@ -9,6 +9,25 @@ afterAll(() => db.end());
 
 describe('Authorization', () => {
     
+    describe('POST /api/users', () => {
+        test('201 - responds with the added user', async () => {
+            const newUser = { user_name: "Harry", user_email: "haribo@hazbob.bob", user_password: "testPassword1234", instrument: "Harmonica" }
+            const response = await request(app)
+                .post("/api/users")
+                .send(newUser)
+                .expect(201);
+
+            const { body: { user } } = response;
+            expect(user).toMatchObject({
+                user_id: expect.any(String),
+                user_name: "Harry",
+                user_email: "haribo@hazbob.bob",
+                user_password: expect.any(String),
+                instrument: "Harmonica"
+            })
+        });
+    })
+
     describe('POST /api/auth/login', () => {
         test('200 - user login succesful with valid credentials', async() => {
             const credentials = {

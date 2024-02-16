@@ -33,7 +33,7 @@ const seed = ({ usersData,
                 CREATE TABLE lessons (
                     lesson_id SERIAL PRIMARY KEY,
                     user_id uuid REFERENCES users(user_id) NOT NULL,
-                    lesson_timestamp TIMESTAMP,
+                    lesson_timestamp TIMESTAMP NOT NULL,
                     duration INT DEFAULT 20
                 );
             `)

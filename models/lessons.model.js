@@ -42,3 +42,15 @@ exports.fetchUserLessonNotes = (user_id, lesson_id) => {
         return rows
     })
 }
+
+exports.insertLesson = (user_id, duration = 20, timestamp) => {
+    return db.query(
+        `
+        INSERT INTO lessons
+        (user_id, duration, lesson_timestamp)
+        VALUES
+        ($1, $2, $3)
+        RETURNING *
+        `, [user_id, duration, timestamp])
+    .then(({ rows }) => rows[0])
+}

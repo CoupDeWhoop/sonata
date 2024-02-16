@@ -222,24 +222,51 @@ describe('GET', () => {
 })
 
 describe('POST', () => {
-
-    describe('POST /api/users', () => {
-        test('201 - responds with the added user', async () => {
-            const newUser = { user_name: "Harry", user_email: "haribo@hazbob.bob", user_password: "testPassword1234", instrument: "Harmonica" }
+    describe('POST api/lessons', () => {
+        test('201 should respond with the posted lesson object', async() => {
+            const currentTimeStamp = new Date().toISOString()
+            const decodedPayload = jwt.decode(accessTokens.accessToken);
+            const newLesson = {timestamp: currentTimeStamp, user_id: decodedPayload.user_id, duration: 30}
             const response = await request(app)
-                .post("/api/users")
-                .send(newUser)
-                .expect(201);
-
-            const { body: { user } } = response;
-            expect(user).toMatchObject({
-                user_id: expect.any(String),
-                user_name: "Harry",
-                user_email: "haribo@hazbob.bob",
-                user_password: expect.any(String),
-                instrument: "Harmonica"
+                .post('/api/lessons')
+                .send(newLesson)
+                .set('Authorization', `Bearer ${accessTokens.accessToken}`)
+                .expect(201)
+            expect(response.body.lesson).toMatchObject({
+                lesson_id: 7,
+                user_id: decodedPayload.user_id,
+                lesson_timestamp: currentTimeStamp,
+                duration: 30
             })
         });
-    })
+
+        test('201 if duration is missing, it should default to 20', async () => {
+            const currentTimeStamp = new Date().toISOString()
+            const decodedPayload = jwt.decode(accessTokens.accessToken);
+            const newLesson = {timestamp: currentTimeStamp, user_id: decodedPayload.user_id}
+            const response = await request(app)
+                .post('/api/lessons')
+                .send(newLesson)
+                .set('Authorization', `Bearer ${accessTokens.accessToken}`)
+                .expect(201);
+                expect(response.body.lesson).toMatchObject({
+                    lesson_id: 7,
+                    user_id: decodedPayload.user_id,
+                    lesson_timestamp: currentTimeStamp,
+                    duration: 20
+                })
+        });
+        test('400 should respond with an error if timestamp is missing', async () => {
+            const decodedPayload = jwt.decode(accessTokens.accessToken);
+            const newLesson = { user_id: decodedPayload.user_id, duration: 30 };
+            const response = await request(app)
+                .post('/api/lessons')
+                .send(newLesson)
+                .set('Authorization', `Bearer ${accessTokens.accessToken}`)
+                .expect(400);
+            expect(response.body.msg).toBe('Invalid request');
+        });
+        
+    });
 
 })

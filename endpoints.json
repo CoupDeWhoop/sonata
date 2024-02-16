@@ -9,8 +9,7 @@
         "lessons": [{
           "lesson_id": 1,
           "user_id": "33457cf0-2988-4c4e-83bc-fda7cd63e459",
-          "lesson_date": "2024-01-01T00:00:00.000Z",
-          "lesson_time": "10:00:00",
+          "lesson_timestamp": "2024-01-01T10:00:00.000Z",
           "duration": 60
         }]
       }
@@ -22,8 +21,7 @@
       "note_id": 5,
       "notes": "Addressed fingering techniques.",
       "lesson_id": 2,
-      "lesson_date": "2024-01-03T00:00:00.000Z",
-      "lesson_time": "15:30:00",
+      "lesson_timestamp": "2024-01-01T10:00:00.000Z",
       "duration": 45
     }
   },
@@ -34,8 +32,7 @@
       "note_id": 5,
       "notes": "Addressed fingering techniques.",
       "lesson_id": 2,
-      "lesson_date": "2024-01-03T00:00:00.000Z",
-      "lesson_time": "15:30:00",
+      "lesson_timestamp": "2024-01-01T10:00:00.000Z",
       "duration": 45
     }
   },
@@ -45,8 +42,7 @@
     "exampleResponse": {
       "practice_id": 3,
       "user_id": "d9df2132-062b-4ce3-8f0e-e02bc24ac7ac",
-      "practice_date": "2024-01-06T00:00:00.000Z",
-      "practice_time": "14:00:00",
+      "practice_timestamp": "2024-01-01T10:00:00.000Z",
       "duration": 45
     }
   },
@@ -57,8 +53,17 @@
         "practice_id": 3,
         "note_id": 7,
         "notes": "Practiced specific passages.",
-        "practice_date": "2024-01-06T00:00:00.000Z",
-        "practice_time": "14:00:00"
+        "practice_timestamp": "2024-01-01T10:00:00.000Z"
+    }
+  },
+  "GET /api/practises/notes/:practice_id": {
+    "description": "serves up an array of practise notes for the given practice_id",
+    "queries": [],
+      "exampleResponse": {
+        "practice_id": 3,
+        "note_id": 7,
+        "notes": "Practiced specific passages.",
+        "practice_timestamp": "2024-01-01T10:00:00.000Z"
     }
   },
   "ADMIN only endpoints": {
