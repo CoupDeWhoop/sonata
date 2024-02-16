@@ -9,12 +9,25 @@ exports.fetchAllLessons = () => {
     })
 }
 
-exports.fetchUserLessons = (user_id) => {
+exports.fetchUserLessons = (user_id, lesson_id) => {
+    const queryValues = [user_id]
+    let queryStr = 'SELECT * FROM lessons WHERE lessons.user_id = $1'
+
+    if (lesson_id) {
+        queryStr += ' AND lessons.lesson_id = $2';
+        queryValues.push(lesson_id);
+    }
+
     return db.query(
-        'SELECT * FROM lessons WHERE lessons.user_id = $1;',
-         [user_id]
+        queryStr, queryValues
     )
-    .then(({rows}) => rows )
+    .then(({rows}) => {
+        if (lesson_id && rows.length === 0) {
+            return Promise.reject({status: 403, msg: "Unauthorised"})
+        } else {
+            return rows;
+        }
+    } )
 }
 
 exports.fetchUserLessonNotes = (user_id, lesson_id) => {
@@ -53,4 +66,17 @@ exports.insertLesson = (user_id, duration = 20, timestamp) => {
         RETURNING *
         `, [user_id, duration, timestamp])
     .then(({ rows }) => rows[0])
+}
+
+exports.insertLessonNote = (lesson_id, notes) => {
+    return db.query(`
+        INSERT INTO lesson_notes
+        (lesson_id, notes)
+        VALUES
+        ($1, $2)
+        RETURNING *
+        `, [lesson_id, notes])
+    .then(({ rows }) => {
+        return rows[0]
+    })
 }

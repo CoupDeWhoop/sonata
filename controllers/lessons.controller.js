@@ -1,4 +1,4 @@
-const { fetchAllLessons, fetchUserLessons, fetchUserLessonNotes, insertLesson } = require('../models/lessons.model')
+const { fetchAllLessons, fetchUserLessons, fetchUserLessonNotes, insertLesson, insertLessonNote } = require('../models/lessons.model')
 
 exports.getAllLessons = (req, res, next) => {
     fetchAllLessons()
@@ -17,6 +17,7 @@ exports.getUserLessons = (req, res, next) => {
         .catch((err) => next(err));
 }
 
+
 exports.getUserLessonNotes = (req, res, next) => {
     const { user_id } = req.user;
     const { lesson_id } = req.params;
@@ -28,12 +29,28 @@ exports.getUserLessonNotes = (req, res, next) => {
 }
 
 exports.postLesson = (req, res, next) => {
-    const { user_id, duration, timestamp } = req.body;
+    const { user_id, duration, timestamp } = req.body; // should i be getting user from req.user?
     insertLesson(user_id, duration, timestamp)
         .then((lesson) => {
-            console.log(lesson)
             res.status(201).send({ lesson })
         })
         .catch((err) => next(err))
+
+}
+
+exports.postLessonNote = (req, res, next) => {
+    const { user_id } = req.user;
+    const { notes, lesson_id } = req.body;
+
+    fetchUserLessons(user_id, lesson_id) // checks lesson matches user
+    .then(() => {
+        return insertLessonNote(lesson_id, notes);
+    })
+    .then((note) => {
+        res.status(201).send({ note });
+    })
+    .catch((err) => {
+        next(err);
+    });
 
 }

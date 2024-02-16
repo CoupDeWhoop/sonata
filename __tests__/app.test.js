@@ -269,4 +269,28 @@ describe('POST', () => {
         
     });
 
+    describe('POST api/lessson/notes', () => {
+        test('201 should respond with the posted lesson note', async() => {
+            const newNote = {lesson_id: 3, notes: "C minor pentatonic, 15 octaves. 11 fingers contrary motion" }
+            const response = await request(app)    
+                .post('/api/lessons/notes')
+                .set('Authorization', `Bearer ${accessTokens.accessToken}`)
+                .send(newNote)
+                .expect(201)
+            expect(response.body.note).toMatchObject({
+                    note_id: expect.any(Number),
+                    lesson_id: 3,
+                    notes: 'C minor pentatonic, 15 octaves. 11 fingers contrary motion'
+            })
+        });
+        test('403 should respond with an error if user tries to post to a lesson not of theirs ', async() => {
+            const newNote = {lesson_id: 4, notes: "C minor pentatonic, 15 octaves. 11 fingers contrary motion" }
+            const response = await request(app)    
+                .post('/api/lessons/notes')
+                .set('Authorization', `Bearer ${accessTokens.accessToken}`)
+                .send(newNote)
+                .expect(403)
+        });
+    });
+
 })
