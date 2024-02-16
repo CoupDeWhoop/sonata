@@ -39,6 +39,28 @@
       "duration": 45
     }
   },
+  "GET /api/practises": {
+    "description": "serves up an array of the practise sessions for the logged in user",
+    "queries": [],
+    "exampleResponse": {
+      "practice_id": 3,
+      "user_id": "d9df2132-062b-4ce3-8f0e-e02bc24ac7ac",
+      "practice_date": "2024-01-06T00:00:00.000Z",
+      "practice_time": "14:00:00",
+      "duration": 45
+    }
+  },
+  "GET /api/practises/notes": {
+    "description": "serves up an array of all the practise notes for the logged-in user",
+    "queries": [],
+      "exampleResponse": {
+        "practice_id": 3,
+        "note_id": 7,
+        "notes": "Practiced specific passages.",
+        "practice_date": "2024-01-06T00:00:00.000Z",
+        "practice_time": "14:00:00"
+    }
+  },
   "ADMIN only endpoints": {
     "GET /api/users": {
       "description": "serves an array of all users in the database. Password encrypted",

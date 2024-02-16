@@ -57,11 +57,11 @@ describe('GET', () => {
                 })
             })
         });
-        test('400: GET request reponds with appropriate status and error when given invalid token', async() => {
+        test('401: GET request reponds with appropriate status and error when given invalid token', async() => {
             const response = await request(app)
                 .get("/api/lessons")
                 .set('Authorization', `Bearer saioashisohaio`)
-                .expect(403);
+                .expect(401);
             expect( response.body.error ).toBe('jwt malformed')
         });
     });
@@ -147,7 +147,81 @@ describe('GET', () => {
                 })
             })
         });
+        test('401: GET request reponds with appropriate status and error when given invalid token', async() => {
+            const response = await request(app)
+                .get("/api/practises")
+                .set('Authorization', `Bearer saioashisohaio`)
+                .expect(401);
+            expect( response.body.error ).toBe('jwt malformed')
+        });
     });
+
+    describe('GET /api/practises/notes', () => {
+        test('200 - should respond with an array of all practice notes for the user', async() => {
+            const response = await request(app)
+                .get('/api/practises/notes')
+                .set('Authorization', `Bearer ${accessTokens.accessToken}`)
+                .expect(200);
+            expect(response.body.notes).toHaveLength(7)
+            response.body.notes.forEach(note => {
+                expect(note).toMatchObject({
+                    practice_id: expect.any(Number),
+                    note_id: expect.any(Number),
+                    notes: expect.any(String),
+                    practice_date: expect.any(String),
+                    practice_time: expect.any(String)
+                })
+            })
+        });
+    });
+
+    describe('GET /api/practises/notes/:practice_id', () => {
+        test('200 - should serve an array of practice notes linked to the given practice_id', async() => {
+            const response = await request(app)
+                .get('/api/practises/notes/3')
+                .set('Authorization', `Bearer ${accessTokens.accessToken}`)
+                .expect(200)
+            const { body: { notes }} = response;
+            expect(notes).toHaveLength(3)
+            notes.forEach(note => {
+                expect(note).toMatchObject({
+                    practice_id: expect.any(Number),
+                    note_id: expect.any(Number),
+                    notes: expect.any(String),
+                    practice_date: expect.any(String),
+                    practice_time: expect.any(String)
+                })
+            })
+        });
+        test('404 - should respond with a 404 status code when practice_id for valid user', async() => {
+            const response = await request(app)
+                .get('/api/practises/notes/999')
+                .set('Authorization', `Bearer ${accessTokens.accessToken}`)
+                .expect(404);
+            expect (response.body.msg).toBe('Not found')
+        });
+        test('400 - should respond with a 400 status code for invalid input', async() => {
+            const response = await request(app)
+                .get('/api/practises/notes/invalid_id')
+                .set('Authorization', `Bearer ${accessTokens.accessToken}`)
+                .expect(400);
+        });
+        test('401 - should respond with a 401 status code when invalid authorization token is provided', async() => {
+           let invalidToken = accessTokens.accessToken.slice(0, -1) + 'a'
+            const response = await request(app)
+                .get('/api/practises/notes/3')
+                .set('Authorization', `Bearer ${invalidToken}`)
+                .expect(401);
+            expect(response.body.error).toBe('invalid signature')
+        });
+        test('401 - should respond with a 401 status code when no authorization token is provided', async() => {
+            const response = await request(app)
+                .get('/api/practises/notes/3')
+                .expect(401);
+            expect(response.body.error).toBe('Null token')
+        });
+    });
+
 
     // describe('GET /api')
 
