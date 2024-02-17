@@ -86,10 +86,10 @@ describe('GET', () => {
         });
     });
 
-    describe('GET /api/lessons/notes/:lesson_id', () => {
+    describe('GET /api/lessons/:/lesson_id/notes', () => {
         test('200 - should respond with an array of notes associated with given lesson and user', async () => {
             const response = await request(app)
-                .get('/api/lessons/notes/2')
+                .get('/api/lessons/2/notes')
                 .set('Authorization', `Bearer ${accessTokens.accessToken}`)
                 .expect(200)
 
@@ -107,7 +107,7 @@ describe('GET', () => {
         });
         test('404 - lesson_id not found', async () => {
             const response = await request(app)
-                .get("/api/lessons/notes/108")
+                .get("/api/lessons/108/notes")
                 .set('Authorization', `Bearer ${accessTokens.accessToken}`)
                 .expect(404)
 
@@ -116,7 +116,7 @@ describe('GET', () => {
         });
         test('status 400 - article_id is a number', async () => {
             const response = await request(app)
-                .get("/api/lessons/notes/i2a3m")
+                .get("/api/lessons/i2a3m/notes")
                 .set('Authorization', `Bearer ${accessTokens.accessToken}`)
                 .expect(400)
 
@@ -170,10 +170,10 @@ describe('GET', () => {
         });
     });
 
-    describe('GET /api/practises/notes/:practice_id', () => {
+    describe('GET /api/practises/:practice_id/notes', () => {
         test('200 - should serve an array of practice notes linked to the given practice_id', async () => {
             const response = await request(app)
-                .get('/api/practises/notes/3')
+                .get('/api/practises/3/notes')
                 .set('Authorization', `Bearer ${accessTokens.accessToken}`)
                 .expect(200)
             const { body: { notes } } = response;
@@ -189,28 +189,28 @@ describe('GET', () => {
         });
         test('404 - should respond with a 404 status code when practice_id for valid user', async () => {
             const response = await request(app)
-                .get('/api/practises/notes/999')
+                .get('/api/practises/999/notes')
                 .set('Authorization', `Bearer ${accessTokens.accessToken}`)
                 .expect(404);
             expect(response.body.msg).toBe('Not found')
         });
         test('400 - should respond with a 400 status code for invalid input', async () => {
             const response = await request(app)
-                .get('/api/practises/notes/invalid_id')
+                .get('/api/practises/invalid_id/notes')
                 .set('Authorization', `Bearer ${accessTokens.accessToken}`)
                 .expect(400);
         });
         test('401 - should respond with a 401 status code when invalid authorization token is provided', async () => {
             let invalidToken = accessTokens.accessToken.slice(0, -1) + 'a'
             const response = await request(app)
-                .get('/api/practises/notes/3')
+                .get('/api/practises/3/notes')
                 .set('Authorization', `Bearer ${invalidToken}`)
                 .expect(401);
             expect(response.body.error).toBe('invalid signature')
         });
         test('401 - should respond with a 401 status code when no authorization token is provided', async () => {
             const response = await request(app)
-                .get('/api/practises/notes/3')
+                .get('/api/practises/3/notes')
                 .expect(401);
             expect(response.body.error).toBe('Null token')
         });
@@ -269,7 +269,7 @@ describe('POST', () => {
         
     });
 
-    describe('POST api/lessson/notes', () => {
+    describe('POST api/lessons/notes', () => {
         test('201 should respond with the posted lesson note', async() => {
             const newNote = {lesson_id: 3, notes: "C minor pentatonic, 15 octaves. 11 fingers contrary motion" }
             const response = await request(app)    
@@ -291,6 +291,10 @@ describe('POST', () => {
                 .send(newNote)
                 .expect(403)
         });
+    });
+
+    describe('POST api/practises', () => {
+        
     });
 
 })

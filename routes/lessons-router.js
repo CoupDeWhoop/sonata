@@ -5,7 +5,7 @@ const { authenticateToken, requireAdmin } = require('../middleware/auth.middlewa
 lessonRouter.get('/admin', authenticateToken, requireAdmin, getAllLessons);
 lessonRouter.get('/', authenticateToken, getUserLessons);
 lessonRouter.get('/notes', authenticateToken, getUserLessonNotes)
-lessonRouter.get('/notes/:lesson_id', authenticateToken, getUserLessonNotes)
+lessonRouter.get('/:lesson_id/notes', authenticateToken, getUserLessonNotes)
 
 lessonRouter.post('/', authenticateToken, postLesson)
 lessonRouter.post('/notes', authenticateToken, postLessonNote)
