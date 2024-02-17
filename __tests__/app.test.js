@@ -294,7 +294,34 @@ describe('POST', () => {
     });
 
     describe('POST api/practises', () => {
-        
+        test('201 - should respond with the posted practice object', async() => {
+            const currentTimeStamp = new Date().toISOString()
+            const decodedPayload = jwt.decode(accessTokens.accessToken);
+            const newPractice = {timestamp: currentTimeStamp, duration:15};
+            const response = await request(app)
+                .post('/api/practises')
+                .send(newPractice)
+                .set('Authorization', `Bearer ${accessTokens.accessToken}`)
+                .expect(201)
+            expect(response.body.note).toMatchObject({
+                practice_id: expect.any(Number),
+                user_id: decodedPayload.user_id,
+                practice_timestamp: currentTimeStamp,
+                duration: 15
+            })
+        });
+        test('400 - POST request should reject malformed input', async() => {
+            const response = await request(app)
+                .post('/api/practises')
+                .set('Authorization', `Bearer ${accessTokens.accessToken}`)
+                .send({timestamp: "eroneous", duration: 32})
+                .expect(400)
+            const response2 = await request(app)
+                .post('/api/practises')
+                .set('Authorization', `Bearer ${accessTokens.accessToken}`)
+                .send({timestamp: new Date().toISOString(), duration: 'Phil'})
+                .expect(400)
+        })
     });
 
 })

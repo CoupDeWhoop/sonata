@@ -32,3 +32,17 @@ exports.fetchUserPracticeNotes = (user_id, practice_id) => {
             return rows
         })
 }
+
+exports.insertPractice = (user_id, timestamp, duration) => {
+    return db.query(`
+    INSERT INTO practises
+    (user_id, practice_timestamp, duration)
+    VALUES
+    ($1, $2, $3)
+    RETURNING * `
+    , [user_id, timestamp, duration])
+    .then(({ rows }) => {
+        console.log(rows)
+        return rows[0]
+    })
+}

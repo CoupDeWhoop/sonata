@@ -1,4 +1,4 @@
-const { fetchUserPractises, fetchUserPracticeNotes } = require('../models/practises.model.js')
+const { fetchUserPractises, fetchUserPracticeNotes, insertPractice } = require('../models/practises.model.js')
 
 exports.getUserPractises = (req, res, next) => {
     const { user_id } = req.user;
@@ -22,4 +22,14 @@ exports.getUserPracticeNotes = (req, res, next) => {
         .catch((err) => {
             next(err)
         })
+}
+
+exports.postPractice = (req, res, next) => {
+    const { user_id } = req.user;
+    const { timestamp, duration } = req.body;
+    insertPractice(user_id, timestamp, duration)
+        .then((note) => {
+            res.status(201).send({ note })
+        })
+        .catch((err) => next(err))
 }
