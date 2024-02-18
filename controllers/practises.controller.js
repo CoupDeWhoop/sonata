@@ -1,4 +1,5 @@
-const { fetchUserPractises, fetchUserPracticeNotes, insertPractice, insertPracticeNote } = require('../models/practises.model.js')
+const { fetchUserPractises, fetchUserPracticeNotes, insertPractice, insertPracticeNote } = require('../models/practises.model.js');
+const { checkExists } = require('../utils/utils.js');
 
 exports.getUserPractises = (req, res, next) => {
     const { user_id } = req.user;
@@ -37,13 +38,18 @@ exports.postPractice = (req, res, next) => {
 exports.postPracticeNote = (req, res, next) => {
     const { user_id } = req.user;
     const { notes, practice_id } = req.body;
-    fetchUserPractises(user_id) // checks practice matches user
+    checkExists('practises', 'practice_id', practice_id)
         .then(() => {
+            return fetchUserPractises(user_id, practice_id)  // checks practice belongs to user
+        })
+        .then((matches) => {
+            if (matches.length === 0) return Promise.reject({status: 403, msg: "Forbidden"})
             return insertPracticeNote(practice_id, notes)
         })
         .then((note) => {
             res.status(201).send({note})
         })
+        .catch((err) => next(err))
 
 }
 

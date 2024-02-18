@@ -325,7 +325,7 @@ describe('POST', () => {
     });
 
     describe('POST api/practises/:practice_id/notes', () => {
-        test.only('201 should respond with the posted practice note ', async() => {
+        test('201 should respond with the posted practice note ', async() => {
             const newNote = {practice_id: 3, notes: "managed to conquer G# minor"};
             const response = await request(app)    
                 .post('/api/practises/3/notes')
@@ -337,6 +337,25 @@ describe('POST', () => {
                 notes: "managed to conquer G# minor",
                 note_id: expect.any(Number)
             })
+        });
+        test('404 should respond with Not Found if practice ID does not exist', async() => {
+            const nonExistentPracticeId = 999; // Assuming this ID does not exist
+            const newNote = { practice_id: nonExistentPracticeId, notes: "Some notes" };
+            const response = await request(app)
+                .post(`/api/practises/${nonExistentPracticeId}/notes`)
+                .set('Authorization', `Bearer ${accessTokens.accessToken}`)
+                .send(newNote)
+                .expect(404);
+            expect(response.body.msg).toBe('Resource not found');
+        });
+        test('403 -  it should reject a POST request to another users practice', async() => {
+            const newNote = {practice_id: 6, notes: "notes going to wrong place"};
+            const response = await request(app)    
+                .post(`/api/practises/${newNote.practice_id}/notes`)
+                .set('Authorization', `Bearer ${accessTokens.accessToken}`)
+                .send(newNote)
+                .expect(403)
+            expect(response.body.msg).toBe('Forbidden')
         });
     });
 

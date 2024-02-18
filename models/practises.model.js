@@ -1,11 +1,18 @@
 const db = require('../db/connection.js')
 
-exports.fetchUserPractises = (user_id) => {
-    return db.query(
-        'SELECT * FROM practises WHERE practises.user_id = $1;',
-         [user_id]
-    )
-    .then(({rows}) => rows )
+exports.fetchUserPractises = (user_id, practice_id) => {
+    const queryValues = [user_id];
+    let queryStr = 'SELECT * FROM practises WHERE practises.user_id = $1';
+    
+    if (practice_id) {
+        queryStr += ' AND practises.practice_id = $2';
+        queryValues.push(practice_id);
+    }
+    
+    return db.query(queryStr, queryValues)
+        .then(({rows}) => { 
+            return rows;
+        });
 }
 
 exports.fetchUserPracticeNotes = (user_id, practice_id) => {
@@ -55,7 +62,6 @@ exports.insertPracticeNote = (practice_id, notes) => {
         RETURNING *
         `, [practice_id, notes])
     .then(({ rows }) => {
-        console.log(rows[0])
         return rows[0]
     })
 }
