@@ -13,7 +13,6 @@ app.use(cookieParser());
 app.use('/api', apiRouter);
 
 app.use((err, req, res, next) => {
-    console.log(err)
     if (err.code === "22P02" || err.code === "23502" || err.code === "22007") {
         res.status(400).send({msg: "Invalid request"})
     }

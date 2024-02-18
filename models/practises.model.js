@@ -35,14 +35,27 @@ exports.fetchUserPracticeNotes = (user_id, practice_id) => {
 
 exports.insertPractice = (user_id, timestamp, duration) => {
     return db.query(`
-    INSERT INTO practises
-    (user_id, practice_timestamp, duration)
-    VALUES
-    ($1, $2, $3)
-    RETURNING * `
-    , [user_id, timestamp, duration])
+        INSERT INTO practises
+        (user_id, practice_timestamp, duration)
+        VALUES
+        ($1, $2, $3)
+        RETURNING * `
+        , [user_id, timestamp, duration])
     .then(({ rows }) => {
-        console.log(rows)
+        return rows[0]
+    })
+}
+
+exports.insertPracticeNote = (practice_id, notes) => {
+    return db.query(`
+        INSERT INTO practice_notes
+        (practice_id, notes)
+        VALUES
+        ($1, $2)
+        RETURNING *
+        `, [practice_id, notes])
+    .then(({ rows }) => {
+        console.log(rows[0])
         return rows[0]
     })
 }

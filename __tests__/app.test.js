@@ -314,7 +314,7 @@ describe('POST', () => {
             const response = await request(app)
                 .post('/api/practises')
                 .set('Authorization', `Bearer ${accessTokens.accessToken}`)
-                .send({timestamp: "eroneous", duration: 32})
+                .send({timestamp: "2024-01-02 234", duration: 32})
                 .expect(400)
             const response2 = await request(app)
                 .post('/api/practises')
@@ -322,6 +322,22 @@ describe('POST', () => {
                 .send({timestamp: new Date().toISOString(), duration: 'Phil'})
                 .expect(400)
         })
+    });
+
+    describe('POST api/practises/:practice_id/notes', () => {
+        test.only('201 should respond with the posted practice note ', async() => {
+            const newNote = {practice_id: 3, notes: "managed to conquer G# minor"};
+            const response = await request(app)    
+                .post('/api/practises/3/notes')
+                .set('Authorization', `Bearer ${accessTokens.accessToken}`)
+                .send(newNote)
+                .expect(201)
+            expect(response.body.note).toMatchObject({
+                practice_id: 3,
+                notes: "managed to conquer G# minor",
+                note_id: expect.any(Number)
+            })
+        });
     });
 
 })
