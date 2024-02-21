@@ -5,4 +5,4 @@ app.listen(PORT, (err) => {
     console.log(`Listening on ${PORT}...`);
 })
 
-// see these notes "Hosting a PSQL DB using ElephantSQL and Render"
+// see these notes: "Hosting a PSQL DB using ElephantSQL and Render"

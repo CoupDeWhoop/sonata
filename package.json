@@ -6,8 +6,10 @@
   "type": "commonjs",
   "scripts": {
     "test": "jest --runInBand",
+    "start": "node listen.js",
     "setup-db": "psql -f db/setup-db.sql",
     "seed": "node db/run-seed.js",
+    "seed-prod": "NODE_ENV=production node db/run-seed.js",
     "playground": "psql -f playground.sql > playground.txt",
     "prepare": "husky"
   },
