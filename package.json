@@ -10,8 +10,7 @@
     "setup-db": "psql -f db/setup-db.sql",
     "seed": "node db/run-seed.js",
     "seed-prod": "NODE_ENV=production node db/run-seed.js",
-    "playground": "psql -f playground.sql > playground.txt",
-    "prepare": "husky install"
+    "playground": "psql -f playground.sql > playground.txt"
   },
   "keywords": [],
   "author": "",
