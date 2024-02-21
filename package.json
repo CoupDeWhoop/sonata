@@ -11,7 +11,7 @@
     "seed": "node db/run-seed.js",
     "seed-prod": "NODE_ENV=production node db/run-seed.js",
     "playground": "psql -f playground.sql > playground.txt",
-    "prepare": "husky"
+    "prepare": "husky install"
   },
   "keywords": [],
   "author": "",
