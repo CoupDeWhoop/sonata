@@ -29,7 +29,8 @@ exports.getUserLessonNotes = (req, res, next) => {
 }
 
 exports.postLesson = (req, res, next) => {
-    const { user_id, duration, timestamp } = req.body; // should i be getting user from req.user?
+    const { user_id } = req.user;
+    const { duration, timestamp } = req.body; 
     insertLesson(user_id, duration, timestamp)
         .then((lesson) => {
             res.status(201).send({ lesson })
