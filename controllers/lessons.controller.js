@@ -43,15 +43,22 @@ exports.postLessonNote = (req, res, next) => {
     const { user_id } = req.user;
     const { notes, lesson_id } = req.body;
 
-    fetchUserLessons(user_id, lesson_id) // checks lesson matches user
-    .then(() => {
-        return insertLessonNote(lesson_id, notes);
-    })
-    .then((note) => {
-        res.status(201).send({ note });
-    })
-    .catch((err) => {
-        next(err);
-    });
+    const postLessonPromises = [
+        fetchUserLessons(user_id, lesson_id), // checks lesson matches user
+        insertLessonNote(lesson_id, notes)
+    ]
 
+    Promise.all(postLessonPromises)
+        .then((promiseResolutions) => {
+            res.status(201).send({ note: promiseResolutions[1] });
+        })
+        .catch((err) => {
+            next(err);
+        });
+
+}
+
+exports.patchLessonNote = (req, res, next) => {
+    const { user_id } = req.user;
+    const { notes, note_id } = req.body;
 }
