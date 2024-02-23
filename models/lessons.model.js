@@ -80,3 +80,15 @@ exports.insertLessonNote = (lesson_id, notes) => {
         return rows[0]
     })
 }
+
+exports.updateLessonNote = (note_id, notes) => {
+    return db.query(`
+        UPDATE lesson_notes
+        SET notes = $1
+        WHERE note_id = $2
+        RETURNING *
+        `, [notes, note_id])
+    .then(({ rows }) => {
+        return rows[0]
+    })
+}

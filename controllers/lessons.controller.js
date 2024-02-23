@@ -1,4 +1,5 @@
-const { fetchAllLessons, fetchUserLessons, fetchUserLessonNotes, insertLesson, insertLessonNote } = require('../models/lessons.model')
+const { fetchAllLessons, fetchUserLessons, fetchUserLessonNotes, insertLesson, insertLessonNote, updateLessonNote } = require('../models/lessons.model');
+const { checkUserMatch } = require('../utils/utils');
 
 exports.getAllLessons = (req, res, next) => {
     fetchAllLessons()
@@ -36,7 +37,6 @@ exports.postLesson = (req, res, next) => {
             res.status(201).send({ lesson })
         })
         .catch((err) => next(err))
-
 }
 
 exports.postLessonNote = (req, res, next) => {
@@ -55,10 +55,16 @@ exports.postLessonNote = (req, res, next) => {
         .catch((err) => {
             next(err);
         });
-
 }
 
 exports.patchLessonNote = (req, res, next) => {
     const { user_id } = req.user;
     const { notes, note_id } = req.body;
+    Promise.all([updateLessonNote(note_id, notes), checkUserMatch('lesson_notes', 'lessons', 'lesson_id', note_id, user_id)])
+        .then((results) => {
+            res.status(200).send({ note: results[0] })
+        })
+        .catch((err) => {
+            next(err);
+        })
 }

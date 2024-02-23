@@ -359,4 +359,29 @@ describe('POST', () => {
         });
     });
 
+    describe('PATCH', () => {
+        describe('Name of the group', () => {
+            test('should update the note of the given note_id', async() => {
+                const newLessonNotes = {note_id: 3, notes: "gave up on that piece. Onwards!"}
+                const response = await request(app)
+                    .patch('/api/lessons/notes')
+                    .set('Authorization', `Bearer ${accessTokens.accessToken}`)
+                    .send(newLessonNotes)
+                    .expect(200)
+                expect(response.body.note).toMatchObject(
+                    {note_id: 3, lesson_id:2, notes: "gave up on that piece. Onwards!"}
+                )
+            });
+            test('should not update another users lesson note', async() => {
+                const newLessonNotes = {note_id: 9, notes: "what have you been working on Mike?"};
+                const response = await request(app)
+                .patch('/api/lessons/notes')
+                .set('Authorization', `Bearer ${accessTokens.accessToken}`)
+                .send(newLessonNotes)
+                .expect(403)
+
+            });
+        });
+    });
+
 })
