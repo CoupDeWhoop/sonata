@@ -20,7 +20,7 @@ const checkUserMatch = async(table1, table2, field, value, user_id) => {
     ON %I.%I= %I.%I
     WHERE %I.%I = $1
     AND %I.user_id = $2;`, table1, table2, table1, field, table2, field, table1, field, table2)
-    console.log(queryStr)
+
     const dbOutput = await db.query(queryStr, [value, user_id])
 
     if(dbOutput.rows.length === 0) {
