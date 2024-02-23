@@ -360,8 +360,8 @@ describe('POST', () => {
     });
 
     describe('PATCH', () => {
-        describe('Name of the group', () => {
-            test('should update the note of the given note_id', async() => {
+        describe('PATCH /api/lessons/notes', () => {
+            test('should update the notes of the given note_id', async() => {
                 const newLessonNotes = {note_id: 3, notes: "gave up on that piece. Onwards!"}
                 const response = await request(app)
                     .patch('/api/lessons/notes')
@@ -379,7 +379,20 @@ describe('POST', () => {
                 .set('Authorization', `Bearer ${accessTokens.accessToken}`)
                 .send(newLessonNotes)
                 .expect(403)
+            });
 
+        });
+        describe('PATCH /api/practises/:practice_id/notes', () => {
+            test('200 should update the notes given note_id', async() => {
+                const newPracticeNotes = {note_id: 2, notes: "gave up on that piece. Onwards!"}
+                const response = await request(app)
+                    .patch('/api/practises/2/notes')
+                    .set('Authorization', `Bearer ${accessTokens.accessToken}`)
+                    .send(newPracticeNotes)
+                    .expect(200)
+                expect(response.body.note).toMatchObject(
+                    {note_id: 2, practice_id:2, notes: "gave up on that piece. Onwards!"}
+                )
             });
         });
     });

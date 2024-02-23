@@ -1,5 +1,5 @@
-const { fetchUserPractises, fetchUserPracticeNotes, insertPractice, insertPracticeNote } = require('../models/practises.model.js');
-const { checkExists } = require('../utils/utils.js');
+const { fetchUserPractises, fetchUserPracticeNotes, insertPractice, insertPracticeNote, updatePracticeNote } = require('../models/practises.model.js');
+const { checkExists, checkUserMatch } = require('../utils/utils.js');
 
 exports.getUserPractises = (req, res, next) => {
     const { user_id } = req.user;
@@ -53,6 +53,17 @@ exports.postPracticeNote = (req, res, next) => {
 
 }
 
+exports.patchPracticeNote = (req, res, next) => {
+    const { user_id } = req.user;
+    const { notes, note_id, practice_id } = req.body;
+    Promise.all([updatePracticeNote(note_id, notes, practice_id), checkUserMatch('practice_notes', 'practises', 'practice_id', note_id, user_id)])
+        .then((results) => {
+            res.status(200).send({ note: results[0] })
+        })
+        .catch((err) => {
+            next(err);
+        })
+}
 
 
 
