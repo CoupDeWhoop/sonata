@@ -11,7 +11,7 @@
     "seed": "node db/run-seed.js",
     "seed-prod": "NODE_ENV=production node db/run-seed.js",
     "playground": "psql -f playground.sql > playground.txt",
-    "husky": "prepare"
+    "prepare": "husky"
   },
   "keywords": [],
   "author": "",
@@ -22,11 +22,11 @@
     "cors": "^2.8.5",
     "dotenv": "^16.3.2",
     "express": "^4.18.2",
+    "husky": "^9.0.11",
     "jsonwebtoken": "^9.0.2",
     "pg": "^8.11.3",
     "pg-format": "^1.0.4",
-    "uuid": "^9.0.1",
-    "husky": "^9.0.1"
+    "uuid": "^9.0.1"
   },
   "devDependencies": {
     "jest": "^29.7.0",

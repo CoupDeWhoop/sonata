@@ -74,7 +74,7 @@
         "user_name": "Damien",
         "user_email": "testemail@test.com",
         "user_password": "$2b$10$2dEbtqO2hCIaB1K473Or0.Idoll1INSk57QEulDPOtIkcnWhVWQwq",
-        "instrument": "Piano"
+        "instrument": "Pianissimo"
       }
     },
     "GET /api/lessons/admin": {
