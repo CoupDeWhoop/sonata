@@ -73,4 +73,27 @@ describe('Authorization', () => {
         })
 
     });
+
+    describe('GET /api/auth/refresh-token', () => {
+        test('200 - user refresh succesful ', async() => {
+            const credentials = {
+                email: 'testemail@test.com',
+                password: 'Password123'
+            };
+            const response = await request(app)
+                .post("/api/auth/login")
+                .send(credentials)
+                .expect(200)
+            
+            const loginTokens = response.body.tokens;
+            
+            const response2 = await request(app)
+                .get("/api/auth/refresh-token")
+                .set('Cookie', [`refresh_token=${loginTokens.refreshToken}`]) 
+                .expect(200)
+            expect(response2.body).toMatchObject({
+                refreshToken: expect.any(String)
+            })
+            });    
+        });
 });

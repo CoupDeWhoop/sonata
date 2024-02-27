@@ -15,9 +15,8 @@ exports.postLogin = (req, res, next) => {
 exports.getRefreshToken = (req, res, next) => {
     const refreshToken = req.cookies.refresh_token;
     verifyRefreshToken(refreshToken)
-        .then(({ refreshToken }) => {
-            console.log("made it back to control")
-            res.cookie('refresh_token', refreshToken, { httpOnly: true })
+        .then((tokens) => {
+            res.cookie('refresh_token', tokens.refreshToken, { httpOnly: true })
             res.status(200).send({ refreshToken });
         })
         .catch((err) => {

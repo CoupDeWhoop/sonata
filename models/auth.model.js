@@ -28,7 +28,6 @@ exports.verifyRefreshToken = (refreshToken) => {
             reject({status: 401, msg: 'Null refresh token'});
         }
         jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, decodedUser) => {
-            console.log("verify in model")
             if(err) {
                 reject({status: 403, error: err.message});
             } else {
