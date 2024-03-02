@@ -9,7 +9,8 @@ const lessonsData = [
     { user_name: 'Damien', lesson_timestamp: '2024-01-05 11:15:00', length: 75 },
     { user_name: 'Mike', lesson_timestamp: '2024-01-02 09:00:00', length: 60 },
     { user_name: 'Mike', lesson_timestamp: '2024-01-04 14:00:00', length: 45 },
-    { user_name: 'Mike', lesson_timestamp: '2024-01-06 16:30:00', length: 60 }
+    { user_name: 'Mike', lesson_timestamp: '2024-01-06 16:30:00', length: 60 },
+    { user_name: 'Damien', lesson_timestamp: '2024-01-06 17:30:00', length: 30 },
 ];
 
 const lessonNotesData = [

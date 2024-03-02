@@ -1,4 +1,4 @@
-const { fetchAllLessons, fetchUserLessons, fetchUserLessonNotes, insertLesson, insertLessonNote, updateLessonNote } = require('../models/lessons.model');
+const { fetchAllLessons, fetchUserLessons, fetchUserLessonsAndNotes, insertLesson, insertLessonNote, updateLessonNote } = require('../models/lessons.model');
 const { checkUserMatch } = require('../utils/utils');
 
 exports.getAllLessons = (req, res, next) => {
@@ -19,12 +19,12 @@ exports.getUserLessons = (req, res, next) => {
 }
 
 
-exports.getUserLessonNotes = (req, res, next) => {
+exports.getUserLessonsAndNotes = (req, res, next) => {
     const { user_id } = req.user;
     const { lesson_id } = req.params;
-    fetchUserLessonNotes(user_id, lesson_id)
-        .then((notes) => {
-            res.status(200).send({notes})
+    fetchUserLessonsAndNotes(user_id, lesson_id)
+        .then((lessons) => {
+            res.status(200).send({lessons})
         })
         .catch((err) => next(err))
 }

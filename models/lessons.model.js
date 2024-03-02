@@ -30,18 +30,18 @@ exports.fetchUserLessons = (user_id, lesson_id) => {
     } )
 }
 
-exports.fetchUserLessonNotes = (user_id, lesson_id) => {
+exports.fetchUserLessonsAndNotes = (user_id, lesson_id) => {
     const queryValues = [user_id]
     let queryStr = `
     SELECT
-    lesson_notes.note_id,
-    lesson_notes.notes,
-    lesson_notes.lesson_id,
+    lessons.lesson_id,
     lessons.lesson_timestamp,
-    lessons.duration
-    FROM lesson_notes
-    INNER JOIN lessons
-    ON lesson_notes.lesson_id = lessons.lesson_id
+    lessons.duration,
+    lesson_notes.note_id,
+    lesson_notes.notes
+    FROM lessons
+    LEFT JOIN lesson_notes
+    ON lessons.lesson_id = lesson_notes.lesson_id
     WHERE lessons.user_id = $1`
 
     if (lesson_id) {
@@ -52,7 +52,26 @@ exports.fetchUserLessonNotes = (user_id, lesson_id) => {
     return db.query(queryStr, queryValues)
     .then(({rows}) => {
         if(rows.length === 0) return Promise.reject({status: 404, msg: 'Lesson not found'})
-        return rows
+
+        const lessonsWithNotesArray = rows.reduce((acc, row) => {
+            const {lesson_id, lesson_timestamp, duration, note_id, notes } = row;
+            const existingLesson = acc.find((lesson) => lesson.lesson_id === lesson_id);
+            if (existingLesson) {
+                if (note_id !== undefined) {
+                    existingLesson.notes.push({ note_id, notes });
+                }
+            } else {
+                acc.push({
+                    lesson_id,
+                    lesson_timestamp,
+                    duration,
+                    notes: note_id ? [{ note_id, notes }] : []
+                })
+            }
+            return acc;
+        }, []);
+
+        return lessonsWithNotesArray;
     })
 }
 

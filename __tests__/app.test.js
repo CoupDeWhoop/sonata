@@ -46,7 +46,7 @@ describe('GET', () => {
 
             const decodedPayload = jwt.decode(accessTokens.accessToken);
             const { body } = response;
-            expect(body.lessons).toHaveLength(3)
+            expect(body.lessons).toHaveLength(4)
             body.lessons.forEach((lesson) => {
                 expect(lesson).toMatchObject({
                     lesson_id: expect.any(Number),
@@ -73,15 +73,22 @@ describe('GET', () => {
                 .expect(200);
 
             const { body } = response;
-            expect(body.notes).toHaveLength(7)
-            body.notes.forEach((note) => {
-                expect(note).toMatchObject({
-                    note_id: expect.any(Number),
+            expect(body.lessons).toHaveLength(4)
+            body.lessons.forEach((lesson) => {
+                expect(lesson).toMatchObject({
                     lesson_id: expect.any(Number),
-                    notes: expect.any(String),
-                    lesson_timestamp: expect.any(String), // Updated to timestamp
-                    duration: expect.any(Number)
+                    lesson_timestamp: expect.any(String),
+                    duration: expect.any(Number),
+                    notes: expect.any(Array)
                 })
+                lesson.notes.forEach((note)=>{
+                    expect(note).toEqual(
+                        expect.objectContaining({
+                            note_id: expect.any(Number),
+                            notes: expect.any(String)
+                        })
+                    )
+                })   
             })
         });
     });
@@ -94,16 +101,22 @@ describe('GET', () => {
                 .expect(200)
 
             const { body } = response;
-            expect(body.notes).toHaveLength(3)
-            body.notes.forEach((note) => {
-                expect(note).toMatchObject({
-                    note_id: expect.any(Number),
-                    lesson_id: 2,
-                    notes: expect.any(String),
-                    lesson_timestamp: expect.any(String), // Updated to timestamp
-                    duration: expect.any(Number)
-                })
+            const lesson = body.lessons[0]
+            expect(lesson).toMatchObject({
+                lesson_id: expect.any(Number),
+                lesson_timestamp: expect.any(String),
+                duration: expect.any(Number),
+                notes: expect.any(Array)
             })
+            lesson.notes.forEach((note)=>{
+                expect(note).toEqual(
+                    expect.objectContaining({
+                        note_id: expect.any(Number),
+                        notes: expect.any(String)
+                    })
+                )
+            })   
+
         });
         test('404 - lesson_id not found', async () => {
             const response = await request(app)
@@ -233,7 +246,7 @@ describe('POST', () => {
                 .set('Authorization', `Bearer ${accessTokens.accessToken}`)
                 .expect(201)
             expect(response.body.lesson).toMatchObject({
-                lesson_id: 7,
+                lesson_id: 8,
                 user_id: decodedPayload.user_id,
                 lesson_timestamp: currentTimeStamp,
                 duration: 30
@@ -250,7 +263,7 @@ describe('POST', () => {
                 .set('Authorization', `Bearer ${accessTokens.accessToken}`)
                 .expect(201);
                 expect(response.body.lesson).toMatchObject({
-                    lesson_id: 7,
+                    lesson_id: 8,
                     user_id: decodedPayload.user_id,
                     lesson_timestamp: currentTimeStamp,
                     duration: 20

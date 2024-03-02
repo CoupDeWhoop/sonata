@@ -30,7 +30,7 @@ describe('GET /api/lessons/admin', () => {
             .expect(200);
         const { body } = response;
 
-        expect(body.lessons).toHaveLength(6)
+        expect(body.lessons).toHaveLength(7)
         for (const lesson of body.lessons) {
             expect(lesson).toHaveProperty("lesson_timestamp", expect.any(String))
             expect(lesson.duration).toEqual(expect.any(Number));
