@@ -46,7 +46,7 @@ exports.fetchUserLessonsAndNotes = (user_id, lesson_id) => {
     WHERE lessons.user_id = $1`
 
     if (lesson_id) {
-        queryStr += ' AND lesson_notes.lesson_id = $2';
+        queryStr += ' AND lesson_notes.lesson_id = $2;';
         queryValues.push(lesson_id)
     }
 

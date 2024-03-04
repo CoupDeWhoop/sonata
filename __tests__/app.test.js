@@ -73,6 +73,7 @@ describe('GET', () => {
                 .expect(200);
 
             const { body } = response;
+            console.log(body.lessons[1].notes);
             expect(body.lessons).toHaveLength(4)
             body.lessons.forEach((lesson) => {
                 expect(lesson).toMatchObject({
