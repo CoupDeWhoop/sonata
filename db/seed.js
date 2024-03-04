@@ -42,6 +42,7 @@ const seed = ({ usersData,
             return db.query(`
                 CREATE TABLE lesson_notes (
                     note_id SERIAL PRIMARY KEY,
+                    learning_focus VARCHAR,
                     lesson_id INT REFERENCES lessons(lesson_id),
                     notes VARCHAR
                 );
@@ -108,12 +109,12 @@ const seed = ({ usersData,
         })
         .then(() => {
             const formattedLessonNotes = lessonNotesData.map((note) => {
-                return [note.lesson_id, note.notes]
+                return [note.lesson_id, note.notes, note.learning_focus]
             })
             const insertNotesQueryString = format(
                 `
                 INSERT INTO lesson_notes
-                (lesson_id, notes)
+                (lesson_id, notes, learning_focus)
                 VALUES
                 %L
                 RETURNING *;

@@ -15,9 +15,9 @@ const lessonsData = [
 
 const lessonNotesData = [
     { lesson_id: 1, note_number: 1, learning_focus: 'Scales', notes: 'Focused on scales.' },
-    { lesson_id: 1, note_number: 2, learning_focus: 'Arpeggios', notes: 'Practiced arpeggios.' },
-    { lesson_id: 2, note_number: 1, learning_focus: 'New Piece - Introduction', notes: 'Introduced a new piece.' },
-    { lesson_id: 2, note_number: 2, learning_focus: 'Phrasing', notes: 'Discussed phrasing.' },
+    { lesson_id: 1, note_number: 2, learning_focus: 'Beethoven', notes: 'worked on opening scetion.' },
+    { lesson_id: 2, note_number: 1, learning_focus: 'Mozart Horn concerto', notes: 'Introduced a new piece.' },
+    { lesson_id: 2, note_number: 2, learning_focus: 'Beethoven', notes: 'Discussed phrasing.' },
     { lesson_id: 2, note_number: 3, learning_focus: 'Fingering Techniques', notes: 'Addressed fingering techniques.' },
     { lesson_id: 3, note_number: 1, learning_focus: 'Material Review', notes: 'Reviewed previous material.' },
     { lesson_id: 3, note_number: 2, learning_focus: 'Dynamics', notes: 'Emphasized dynamics.' },
