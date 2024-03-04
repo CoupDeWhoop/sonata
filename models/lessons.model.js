@@ -38,7 +38,8 @@ exports.fetchUserLessonsAndNotes = (user_id, lesson_id) => {
     lessons.lesson_timestamp,
     lessons.duration,
     lesson_notes.note_id,
-    lesson_notes.notes
+    lesson_notes.notes,
+    lesson_notes.learning_focus
     FROM lessons
     LEFT JOIN lesson_notes
     ON lessons.lesson_id = lesson_notes.lesson_id
@@ -54,18 +55,18 @@ exports.fetchUserLessonsAndNotes = (user_id, lesson_id) => {
         if(rows.length === 0) return Promise.reject({status: 404, msg: 'Lesson not found'})
 
         const lessonsWithNotesArray = rows.reduce((acc, row) => {
-            const {lesson_id, lesson_timestamp, duration, note_id, notes } = row;
+            const {lesson_id, lesson_timestamp, duration, note_id, notes, learning_focus } = row;
             const existingLesson = acc.find((lesson) => lesson.lesson_id === lesson_id);
             if (existingLesson) {
                 if (note_id !== undefined) {
-                    existingLesson.notes.push({ note_id, notes });
+                    existingLesson.notes.push({ note_id, notes, learning_focus });
                 }
             } else {
                 acc.push({
                     lesson_id,
                     lesson_timestamp,
                     duration,
-                    notes: note_id ? [{ note_id, notes }] : []
+                    notes: note_id ? [{ note_id, notes, learning_focus }] : []
                 })
             }
             return acc;

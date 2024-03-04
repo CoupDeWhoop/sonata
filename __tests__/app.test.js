@@ -85,7 +85,8 @@ describe('GET', () => {
                     expect(note).toEqual(
                         expect.objectContaining({
                             note_id: expect.any(Number),
-                            notes: expect.any(String)
+                            notes: expect.any(String),
+                            learning_focus: expect.any(String)                       
                         })
                     )
                 })   
@@ -112,7 +113,8 @@ describe('GET', () => {
                 expect(note).toEqual(
                     expect.objectContaining({
                         note_id: expect.any(Number),
-                        notes: expect.any(String)
+                        notes: expect.any(String),
+                        learning_focus: expect.any(String)      
                     })
                 )
             })   
