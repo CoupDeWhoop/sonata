@@ -17,7 +17,7 @@ exports.getRefreshToken = (req, res, next) => {
     verifyRefreshToken(refreshToken)
         .then((tokens) => {
             res.cookie('refresh_token', tokens.refreshToken, { httpOnly: true })
-            res.status(200).send({ refreshToken });
+            res.status(200).send({ tokens });
         })
         .catch((err) => {
             next(err)
