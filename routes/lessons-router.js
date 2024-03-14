@@ -1,10 +1,12 @@
 const lessonRouter = require('express').Router();
-const { getAllLessons, getUserLessons, getUserLessonsAndNotes, postLesson, postLessonNote, patchLessonNote } = require('../controllers/lessons.controller.js');
+const { getAllLessons, getUserLessons, getLessonByLessonId, getUserLessonsAndNotes, postLesson, postLessonNote, patchLessonNote, deleteLessonByLessonId } = require('../controllers/lessons.controller.js');
 const { authenticateToken, requireAdmin } = require('../middleware/auth.middleware.js');
 
 lessonRouter.get('/admin', authenticateToken, requireAdmin, getAllLessons);
 
 lessonRouter.get('/:lesson_id/notes', authenticateToken, getUserLessonsAndNotes)
+//lessonRouter.get('/:lesson_id', authenticateToken, getLessonByLessonId)
+lessonRouter.delete('/:lesson_id', authenticateToken, deleteLessonByLessonId)
 
 lessonRouter.route('/notes')
     .get(authenticateToken, getUserLessonsAndNotes)

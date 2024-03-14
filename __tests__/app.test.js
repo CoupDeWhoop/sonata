@@ -396,8 +396,8 @@ describe('POST', () => {
                 .send(newLessonNotes)
                 .expect(403)
             });
-
         });
+
         describe('PATCH /api/practises/:practice_id/notes', () => {
             test('200 should update the notes given note_id', async() => {
                 const newPracticeNotes = {note_id: 2, notes: "gave up on that piece. Onwards!"}
@@ -413,4 +413,39 @@ describe('POST', () => {
         });
     });
 
+    describe('DELETE', () => {
+        describe('DELETE /api/lessons/:lesson_id', () => {
+            test('204 should delete the lesson with given lesson_id', async() => {
+                const response = await request(app)
+                    .delete('/api/lessons/2')
+                    .set('Authorization', `Bearer ${accessTokens.accessToken}`)
+                    .expect(204)
+                const remainingUserLessons = await request(app)
+                    .get('/api/lessons')
+                    .set('Authorization', `Bearer ${accessTokens.accessToken}`)    
+                    .expect(200)    
+                expect(remainingUserLessons.body.lessons).toHaveLength(3)    
+                })
+        });
+
+        test('404 should respond with Not Found if lesson_id does not exist', async () => {
+            const nonExistentLessonId = 999; 
+            const response = await request(app)
+                .delete(`/api/lessons/${nonExistentLessonId}`)
+                .set('Authorization', `Bearer ${accessTokens.accessToken}`)
+                .expect(404);
+            expect(response.body.msg).toBe('Lesson not found');
+        });
+
+        test('403 should respond with Forbidden if user does not have permission', async () => {
+            const response = await request(app)
+                .delete('/api/lessons/5')
+                .set('Authorization', `Bearer ${accessTokens.accessToken}`)
+                .expect(403);
+            expect(response.body.msg).toBe('Forbidden');
+        });
+
+    })
+
 })
+

@@ -1,4 +1,4 @@
-const { fetchAllLessons, fetchUserLessons, fetchUserLessonsAndNotes, insertLesson, insertLessonNote, updateLessonNote } = require('../models/lessons.model');
+const { fetchAllLessons, fetchUserLessons, fetchLessonByLessonId, fetchUserLessonsAndNotes, insertLesson, insertLessonNote,  updateLessonNote, removeLessonNoteByLessonId, removeLessonByLessonId } = require('../models/lessons.model');
 const { checkUserMatch } = require('../utils/utils');
 
 exports.getAllLessons = (req, res, next) => {
@@ -44,7 +44,7 @@ exports.postLessonNote = (req, res, next) => {
     const { learning_focus, notes, lesson_id } = req.body;
 
     const postLessonPromises = [
-        fetchUserLessons(user_id, lesson_id), // checks lesson matches user
+        fetchLessonByLessonId(user_id, lesson_id), // checks lesson matches user
         insertLessonNote(lesson_id, learning_focus, notes)
     ]
 
@@ -67,5 +67,21 @@ exports.patchLessonNote = (req, res, next) => {
         .catch((err) => {
             next(err);
         })
+}
+
+exports.deleteLessonByLessonId = (req, res, next) => {
+    const { user_id } = req.user;
+    const { lesson_id } = req.params;
+    fetchLessonByLessonId(user_id, lesson_id)
+        .then(() => {
+            return removeLessonNoteByLessonId(lesson_id);
+        })
+        .then(() => {
+            return removeLessonByLessonId(lesson_id);
+        })
+        .then(() => {
+            res.status(204).send()
+        })
+        .catch((err) => next(err));
 }
 
