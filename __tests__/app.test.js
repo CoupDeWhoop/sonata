@@ -241,7 +241,7 @@ describe('POST', () => {
         test('201 should respond with the posted lesson object', async() => {
             const currentTimeStamp = new Date().toISOString()
             const decodedPayload = jwt.decode(accessTokens.accessToken);
-            const newLesson = {timestamp: currentTimeStamp, user_id: decodedPayload.user_id, duration: 30}
+            const newLesson = {timestamp: currentTimeStamp, duration: 30}
             const response = await request(app)
                 .post('/api/lessons')
                 .send(newLesson)
@@ -258,7 +258,7 @@ describe('POST', () => {
         test('201 if duration is missing, it should default to 20', async () => {
             const currentTimeStamp = new Date().toISOString()
             const decodedPayload = jwt.decode(accessTokens.accessToken);
-            const newLesson = {timestamp: currentTimeStamp, user_id: decodedPayload.user_id}
+            const newLesson = {timestamp: currentTimeStamp}
             const response = await request(app)
                 .post('/api/lessons')
                 .send(newLesson)
@@ -292,7 +292,6 @@ describe('POST', () => {
                 .set('Authorization', `Bearer ${accessTokens.accessToken}`)
                 .send(newNote)
                 .expect(201)
-                console.log(response.body.note)
             expect(response.body.note).toMatchObject({
                     note_id: expect.any(Number),
                     lesson_id: 3,
