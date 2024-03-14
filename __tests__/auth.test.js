@@ -91,8 +91,9 @@ describe('Authorization', () => {
                 .get("/api/auth/refresh-token")
                 .set('Cookie', [`refresh_token=${loginTokens.refreshToken}`]) 
                 .expect(200)
-            expect(response2.body).toMatchObject({
-                refreshToken: expect.any(String)
+            expect(response2.body.tokens).toMatchObject({
+                refreshToken: expect.any(String),
+                accessToken: expect.any(String)
             })
             });    
         });

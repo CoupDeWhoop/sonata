@@ -286,15 +286,17 @@ describe('POST', () => {
 
     describe('POST api/lessons/notes', () => {
         test('201 should respond with the posted lesson note', async() => {
-            const newNote = {lesson_id: 3, notes: "C minor pentatonic, 15 octaves. 11 fingers contrary motion" }
+            const newNote = {lesson_id: 3, learning_focus: 'scales', notes: "C minor pentatonic, 15 octaves. 11 fingers contrary motion" }
             const response = await request(app)    
                 .post('/api/lessons/notes')
                 .set('Authorization', `Bearer ${accessTokens.accessToken}`)
                 .send(newNote)
                 .expect(201)
+                console.log(response.body.note)
             expect(response.body.note).toMatchObject({
                     note_id: expect.any(Number),
                     lesson_id: 3,
+                    learning_focus: 'scales',
                     notes: 'C minor pentatonic, 15 octaves. 11 fingers contrary motion'
             })
         });
@@ -384,7 +386,7 @@ describe('POST', () => {
                     .send(newLessonNotes)
                     .expect(200)
                 expect(response.body.note).toMatchObject(
-                    {note_id: 3, lesson_id:2, notes: "gave up on that piece. Onwards!"}
+                    {note_id: 3, lesson_id:2, learning_focus: "Mozart Horn concerto", notes: "gave up on that piece. Onwards!"}
                 )
             });
             test('should not update another users lesson note', async() => {

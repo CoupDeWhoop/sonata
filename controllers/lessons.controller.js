@@ -41,11 +41,11 @@ exports.postLesson = (req, res, next) => {
 
 exports.postLessonNote = (req, res, next) => {
     const { user_id } = req.user;
-    const { notes, lesson_id } = req.body;
+    const { learning_focus, notes, lesson_id } = req.body;
 
     const postLessonPromises = [
         fetchUserLessons(user_id, lesson_id), // checks lesson matches user
-        insertLessonNote(lesson_id, notes)
+        insertLessonNote(lesson_id, learning_focus, notes)
     ]
 
     Promise.all(postLessonPromises)

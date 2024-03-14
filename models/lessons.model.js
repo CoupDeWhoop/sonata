@@ -88,14 +88,14 @@ exports.insertLesson = (user_id, duration = 20, timestamp) => {
     .then(({ rows }) => rows[0])
 }
 
-exports.insertLessonNote = (lesson_id, notes) => {
+exports.insertLessonNote = (lesson_id, learning_focus, notes) => {
     return db.query(`
         INSERT INTO lesson_notes
-        (lesson_id, notes)
+        (lesson_id, learning_focus, notes)
         VALUES
-        ($1, $2)
+        ($1, $2, $3)
         RETURNING *
-        `, [lesson_id, notes])
+        `, [lesson_id, learning_focus, notes])
     .then(({ rows }) => {
         return rows[0]
     })
