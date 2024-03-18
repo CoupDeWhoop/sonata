@@ -41,7 +41,8 @@ exports.postLesson = (req, res, next) => {
 
 exports.postLessonNote = (req, res, next) => {
     const { user_id } = req.user;
-    const { learning_focus, notes, lesson_id } = req.body;
+    const { lesson_id } = req.params;
+    const { learning_focus, notes } = req.body;
 
     const postLessonPromises = [
         fetchLessonByLessonId(user_id, lesson_id), // checks lesson matches user

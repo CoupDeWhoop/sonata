@@ -4,13 +4,15 @@ const { authenticateToken, requireAdmin } = require('../middleware/auth.middlewa
 
 lessonRouter.get('/admin', authenticateToken, requireAdmin, getAllLessons);
 
-lessonRouter.get('/:lesson_id/notes', authenticateToken, getUserLessonsAndNotes)
 //lessonRouter.get('/:lesson_id', authenticateToken, getLessonByLessonId)
 lessonRouter.delete('/:lesson_id', authenticateToken, deleteLessonByLessonId)
 
-lessonRouter.route('/notes')
+lessonRouter.route('/:lesson_id/notes')
     .get(authenticateToken, getUserLessonsAndNotes)
     .post(authenticateToken, postLessonNote)
+
+lessonRouter.route('/notes')
+    .get(authenticateToken, getUserLessonsAndNotes)
     .patch(authenticateToken, patchLessonNote);
 
 lessonRouter.route('/')

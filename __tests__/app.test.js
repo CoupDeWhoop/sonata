@@ -284,11 +284,11 @@ describe('POST', () => {
         
     });
 
-    describe('POST api/lessons/notes', () => {
+    describe('POST api/lessons/:lesson_id/notes', () => {
         test('201 should respond with the posted lesson note', async() => {
-            const newNote = {lesson_id: 3, learning_focus: 'scales', notes: "C minor pentatonic, 15 octaves. 11 fingers contrary motion" }
+            const newNote = {learning_focus: 'scales', notes: "C minor pentatonic, 15 octaves. 11 fingers contrary motion" }
             const response = await request(app)    
-                .post('/api/lessons/notes')
+                .post('/api/lessons/3/notes')
                 .set('Authorization', `Bearer ${accessTokens.accessToken}`)
                 .send(newNote)
                 .expect(201)
@@ -300,9 +300,9 @@ describe('POST', () => {
             })
         });
         test('403 should respond with an error if user tries to post to a lesson not of theirs ', async() => {
-            const newNote = {lesson_id: 4, notes: "C minor pentatonic, 15 octaves. 11 fingers contrary motion" }
+            const newNote = {notes: "C minor pentatonic, 15 octaves. 11 fingers contrary motion" }
             const response = await request(app)    
-                .post('/api/lessons/notes')
+                .post('/api/lessons/4/notes')
                 .set('Authorization', `Bearer ${accessTokens.accessToken}`)
                 .send(newNote)
                 .expect(403)
