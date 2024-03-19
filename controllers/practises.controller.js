@@ -68,7 +68,6 @@ exports.patchPracticeNote = (req, res, next) => {
 exports.deletePracticeByPracticeId = (req, res, next) => {
     const { user_id } = req.user;
     const { practice_id } = req.params;
-    console.log(user_id, practice_id);
     fetchPracticeByPracticeId(user_id, practice_id)
         .then(() => {
             return removePracticeNoteByPracticeId(practice_id)
