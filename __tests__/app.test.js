@@ -375,6 +375,10 @@ describe('POST', () => {
         });
     });
 
+    describe('DELETE', () => {
+        
+    });
+
     describe('PATCH', () => {
         describe('PATCH /api/lessons/notes', () => {
             test('should update the notes of the given note_id', async() => {
@@ -446,6 +450,38 @@ describe('POST', () => {
         });
 
     })
+
+    describe('DELETE /api/practises/:practice_id', () => {
+        test('204 should delete the lesson with given practice_id', async() => {
+            const response = await request(app)
+                .delete('/api/practises/1')
+                .set('Authorization', `Bearer ${accessTokens.accessToken}`)
+                .expect(204)
+            const remainingPractises = await request(app)
+                .get('/api/practises')
+                .set('Authorization', `Bearer ${accessTokens.accessToken}`)    
+                .expect(200)    
+            expect(remainingPractises.body.practises).toHaveLength(2)    
+        })
+
+        test('404 should respond with Not Found if practice_id does not exist', async () => {
+            const nonExistentId = 992; 
+            const response = await request(app)
+                .delete(`/api/practises/${nonExistentId}`)
+                .set('Authorization', `Bearer ${accessTokens.accessToken}`)
+                .expect(404);
+            expect(response.body.msg).toBe('Practice not found');
+        });
+
+        test('403 should respond with Forbidden if user does not have permission', async () => {
+            const response = await request(app)
+                .delete('/api/practises/4')
+                .set('Authorization', `Bearer ${accessTokens.accessToken}`)
+                .expect(403);
+            expect(response.body.msg).toBe('Forbidden');
+        });
+
+    });
 
 })
 

@@ -1,4 +1,4 @@
-const { fetchUserPractises, fetchUserPracticeNotes, insertPractice, insertPracticeNote, updatePracticeNote } = require('../models/practises.model.js');
+const { fetchUserPractises, fetchUserPracticeNotes, insertPractice, insertPracticeNote, updatePracticeNote, fetchPracticeByPracticeId, removePracticeNoteByPracticeId, removePracticeByPracticeId } = require('../models/practises.model.js');
 const { checkExists, checkUserMatch } = require('../utils/utils.js');
 
 exports.getUserPractises = (req, res, next) => {
@@ -64,6 +64,25 @@ exports.patchPracticeNote = (req, res, next) => {
             next(err);
         })
 }
+
+exports.deletePracticeByPracticeId = (req, res, next) => {
+    const { user_id } = req.user;
+    const { practice_id } = req.params;
+    console.log(user_id, practice_id);
+    fetchPracticeByPracticeId(user_id, practice_id)
+        .then(() => {
+            return removePracticeNoteByPracticeId(practice_id)
+        })
+        .then(()=> {
+            return removePracticeByPracticeId(practice_id)
+        })
+        .then(() => {
+            res.status(204).send()
+        })
+        .catch((err) => next(err))
+
+}
+
 
 
 

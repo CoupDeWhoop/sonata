@@ -15,6 +15,18 @@ exports.fetchUserPractises = (user_id, practice_id) => {
         });
 }
 
+exports.fetchPracticeByPracticeId = (user_id, practice_id) => {
+    return db.query(`
+        SELECT * FROM practises 
+        WHERE practises.practice_id = $1
+    `, [practice_id])
+    .then(({ rows }) => {
+        if (rows.length === 0) return Promise.reject({status: 404, msg: "Practice not found"})
+        if (rows[0].user_id !== user_id) return Promise.reject({status: 403, msg: "Forbidden"})
+        return rows[0];   
+    })
+}
+
 exports.fetchUserPracticeNotes = (user_id, practice_id) => {
     const queryValues = [user_id];
     let queryStr = `
@@ -76,4 +88,24 @@ exports.updatePracticeNote = (note_id, notes) => {
     .then(({ rows }) => {
         return rows[0]
     })
+}
+
+exports.removePracticeNoteByPracticeId = (practice_id) => {
+    return db.query(`
+        DELETE FROM practice_notes
+        WHERE practice_id = $1
+    `, [practice_id]);
+}
+
+exports.removePracticeByPracticeId = (practice_id) => {
+    return db.query(`
+        DELETE from practises
+        WHERE practice_id = $1
+
+    `, [practice_id])
+    .then(({ rowCount }) => {
+        if (rowCount === 0) {
+            return Promise.reject({ status: 404, msg: 'Practice not found' });
+        }
+    });
 }
