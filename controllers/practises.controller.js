@@ -1,4 +1,4 @@
-const { fetchUserPractises, fetchUserPracticeNotes, insertPractice, insertPracticeNote, updatePracticeNote, fetchPracticeByPracticeId, removePracticeNoteByPracticeId, removePracticeByPracticeId } = require('../models/practises.model.js');
+const { fetchUserPractises, fetchUserPracticeNotes, insertPractice, insertPracticeNote, updatePracticeNote, fetchPracticeByPracticeId, removePracticeNoteByPracticeId, removePracticeByPracticeId, fetchPracticeNoteByNoteId } = require('../models/practises.model.js');
 const { checkExists, checkUserMatch } = require('../utils/utils.js');
 
 exports.getUserPractises = (req, res, next) => {
@@ -37,14 +37,14 @@ exports.postPractice = (req, res, next) => {
 
 exports.postPracticeNote = (req, res, next) => {
     const { user_id } = req.user;
-    const { notes, practice_id } = req.body;
+    const { note_content, practice_id, learning_focus } = req.body;
     checkExists('practises', 'practice_id', practice_id)
         .then(() => {
             return fetchUserPractises(user_id, practice_id)  // checks practice belongs to user
         })
         .then((matches) => {
             if (matches.length === 0) return Promise.reject({status: 403, msg: "Forbidden"})
-            return insertPracticeNote(practice_id, notes)
+            return insertPracticeNote(practice_id, note_content, learning_focus)
         })
         .then((note) => {
             res.status(201).send({note})
@@ -55,14 +55,29 @@ exports.postPracticeNote = (req, res, next) => {
 
 exports.patchPracticeNote = (req, res, next) => {
     const { user_id } = req.user;
-    const { notes, note_id, practice_id } = req.body;
-    Promise.all([updatePracticeNote(note_id, notes, practice_id), checkUserMatch('practice_notes', 'practises', 'practice_id', note_id, user_id)])
-        .then((results) => {
-            res.status(200).send({ note: results[0] })
-        })
-        .catch((err) => {
-            next(err);
-        })
+    const { note_content, learning_focus } = req.body;
+    const { practice_id, note_id } = req.params;
+    checkUserMatch('notes', 'practises', 'practice_id', practice_id, user_id)
+    .then(() => {
+        return fetchPracticeNoteByNoteId(note_id, practice_id)
+    })
+    .then(() => {
+        const updateFields = {};
+        if (learning_focus) {
+            updateFields.learning_focus = learning_focus;
+        }
+        if (note_content) {
+            updateFields.note_content = note_content;
+        }
+        
+        return updatePracticeNote(note_id, updateFields);
+    })
+    .then((updatedNote) => {
+        res.status(200).json({ note: updatedNote });
+    })
+    .catch((err) => {
+        next(err);
+    });
 }
 
 exports.deletePracticeByPracticeId = (req, res, next) => {

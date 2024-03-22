@@ -4,17 +4,18 @@ const { generateUserUUIDs, createRef, replaceKeyWithId, hashPasswords } = requir
 
 let userIdLookup = {};
 
-const seed = ({ usersData,  
+const seed = ({ 
+        usersData,  
         lessonsData,
-        lessonNotesData,
         practisesData,
-        practiceNotesData
+        notesData
     }) => {
     return db
         // drop in reverse order
-        .query('DROP TABLE IF EXISTS practice_notes;')
+        .query('DROP TABLE IF EXISTS notes;')
+        .then(() => db.query('DROP TABLE IF EXISTS lesson_notes'))
+        .then(() => db.query('DROP TABLE IF EXISTS practice_notes;'))
         .then(() => db.query('DROP TABLE IF EXISTS practises;'))
-        .then(() => db.query('DROP TABLE IF EXISTS lesson_notes;'))
         .then(() => db.query('DROP TABLE IF EXISTS lessons;'))
         .then(() => db.query('DROP TABLE IF EXISTS users'))
         .then(() => {
@@ -33,6 +34,7 @@ const seed = ({ usersData,
                 CREATE TABLE lessons (
                     lesson_id SERIAL PRIMARY KEY,
                     user_id uuid REFERENCES users(user_id) NOT NULL,
+                    lesson_title VARCHAR DEFAULT 'Lesson',
                     lesson_timestamp TIMESTAMP NOT NULL,
                     duration INT DEFAULT 20
                 );
@@ -40,30 +42,23 @@ const seed = ({ usersData,
         })
         .then(() => {
             return db.query(`
-                CREATE TABLE lesson_notes (
-                    note_id SERIAL PRIMARY KEY,
-                    learning_focus VARCHAR,
-                    lesson_id INT REFERENCES lessons(lesson_id),
-                    notes VARCHAR
-                );
-            `);
-        })
-        .then(() => {
-            return db.query(`
                 CREATE TABLE practises (
                     practice_id SERIAL PRIMARY KEY,
+                    practice_title VARCHAR DEFAULT 'Practice',
                     user_id uuid REFERENCES users(user_id),
-                    practice_timestamp TIMESTAMP,
+                    practice_timestamp TIMESTAMP NOT NULL,
                     duration INT DEFAULT 5
                 );
             `)
         })
         .then(() => {
             return db.query(`
-                CREATE TABLE practice_notes (
+                CREATE TABLE notes (
                     note_id SERIAL PRIMARY KEY,
                     practice_id INT REFERENCES practises(practice_id),
-                    notes VARCHAR
+                    lesson_id INT REFERENCES lessons(lesson_id),
+                    learning_focus VARCHAR,
+                    note_content VARCHAR
                 );
             `)
         })
@@ -108,23 +103,6 @@ const seed = ({ usersData,
             return db.query(insertLessonsQueryString);
         })
         .then(() => {
-            const formattedLessonNotes = lessonNotesData.map((note) => {
-                return [note.lesson_id, note.notes, note.learning_focus]
-            })
-            const insertNotesQueryString = format(
-                `
-                INSERT INTO lesson_notes
-                (lesson_id, notes, learning_focus)
-                VALUES
-                %L
-                RETURNING *;
-                `,
-                formattedLessonNotes
-            );
-
-            return db.query(insertNotesQueryString)
-        })
-        .then(() => {
             const formattedPractises = replaceKeyWithId(practisesData, userIdLookup, "name").map((practice) => {
                 return [practice.user_id, practice.practice_timestamp, practice.length]
             })
@@ -142,21 +120,21 @@ const seed = ({ usersData,
             return db.query(insertPracticesQueryString);
         })
         .then(() => {
-            const formattedPracticeNotes = practiceNotesData.map((practice) => {
-                return [practice.practice_id, practice.notes]
+            const formattedNotes = notesData.map((note) => {
+                return [note.lesson_id, note.practice_id, note.note_content, note.learning_focus]
             })
-            const insertQueryString = format(
+            const insertNotesQueryString = format(
                 `
-                INSERT INTO practice_notes
-                (practice_id, notes)
+                INSERT INTO notes
+                (lesson_id, practice_id, note_content, learning_focus)
                 VALUES
                 %L
                 RETURNING *;
                 `,
-                formattedPracticeNotes
+                formattedNotes
             );
 
-            return db.query(insertQueryString)
+            return db.query(insertNotesQueryString)
         })
         
 };

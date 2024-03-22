@@ -10,6 +10,6 @@ practiceRouter.get('/:practice_id/notes', authenticateToken, getUserPracticeNote
 practiceRouter.post('/', authenticateToken, postPractice)
 practiceRouter.delete('/:practice_id', authenticateToken, deletePracticeByPracticeId)
 practiceRouter.post('/:practice_id/notes', authenticateToken, postPracticeNote)
-practiceRouter.patch('/:practice_id/notes', authenticateToken, patchPracticeNote)
+practiceRouter.patch('/:practice_id/notes/:note_id', authenticateToken, patchPracticeNote)
 
 module.exports = practiceRouter;

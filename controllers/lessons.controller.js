@@ -42,11 +42,11 @@ exports.postLesson = (req, res, next) => {
 exports.postLessonNote = (req, res, next) => {
     const { user_id } = req.user;
     const { lesson_id } = req.params;
-    const { learning_focus, notes } = req.body;
+    const { learning_focus, note_content } = req.body;
 
     const postLessonPromises = [
         fetchLessonByLessonId(user_id, lesson_id), // checks lesson matches user
-        insertLessonNote(lesson_id, learning_focus, notes)
+        insertLessonNote(lesson_id, learning_focus, note_content)
     ]
 
     Promise.all(postLessonPromises)
@@ -61,7 +61,7 @@ exports.postLessonNote = (req, res, next) => {
 exports.patchLessonNote = (req, res, next) => {
     const { user_id } = req.user;
     const { notes, note_id } = req.body;
-    Promise.all([updateLessonNote(note_id, notes), checkUserMatch('lesson_notes', 'lessons', 'lesson_id', note_id, user_id)])
+    Promise.all([updateLessonNote(note_id, notes), checkUserMatch('notes', 'lessons', 'lesson_id', note_id, user_id)])
         .then((results) => {
             res.status(200).send({ note: results[0] })
         })

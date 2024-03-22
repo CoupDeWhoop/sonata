@@ -38,17 +38,18 @@ exports.fetchUserLessonsAndNotes = (user_id, lesson_id) => {
     SELECT
     lessons.lesson_id,
     lessons.lesson_timestamp,
+    lessons.lesson_title,
     lessons.duration,
-    lesson_notes.note_id,
-    lesson_notes.notes,
-    lesson_notes.learning_focus
+    notes.note_id,
+    notes.note_content,
+    notes.learning_focus
     FROM lessons
-    LEFT JOIN lesson_notes
-    ON lessons.lesson_id = lesson_notes.lesson_id
+    LEFT JOIN notes
+    ON lessons.lesson_id = notes.lesson_id
     WHERE lessons.user_id = $1`
 
     if (lesson_id) {
-        queryStr += ' AND lesson_notes.lesson_id = $2';
+        queryStr += ' AND notes.lesson_id = $2';
         queryValues.push(lesson_id)
     }
 
@@ -58,18 +59,18 @@ exports.fetchUserLessonsAndNotes = (user_id, lesson_id) => {
         if(rows.length === 0) return Promise.reject({status: 404, msg: 'Lesson not found'})
 
         const lessonsWithNotesArray = rows.reduce((acc, row) => {
-            const {lesson_id, lesson_timestamp, duration, note_id, notes, learning_focus } = row;
+            const {lesson_id, lesson_timestamp, duration, note_id, note_content, learning_focus } = row;
             const existingLesson = acc.find((lesson) => lesson.lesson_id === lesson_id);
             if (existingLesson) {
                 if (note_id !== undefined) {
-                    existingLesson.notes.push({ note_id, notes, learning_focus });
+                    existingLesson.notes.push({ note_id, note_content, learning_focus });
                 }
             } else {
                 acc.push({
                     lesson_id,
                     lesson_timestamp,
                     duration,
-                    notes: note_id ? [{ note_id, notes, learning_focus }] : []
+                    notes: note_id ? [{ note_id, note_content, learning_focus }] : []
                 })
             }
             return acc;
@@ -91,26 +92,26 @@ exports.insertLesson = (user_id, duration = 20, timestamp) => {
     .then(({ rows }) => rows[0])
 }
 
-exports.insertLessonNote = (lesson_id, learning_focus, notes) => {
+exports.insertLessonNote = (lesson_id, learning_focus, note_content) => {
     return db.query(`
-        INSERT INTO lesson_notes
-        (lesson_id, learning_focus, notes)
+        INSERT INTO notes
+        (lesson_id, learning_focus, note_content)
         VALUES
         ($1, $2, $3)
         RETURNING *
-    `, [lesson_id, learning_focus, notes])
+    `, [lesson_id, learning_focus, note_content])
     .then(({ rows }) => {
         return rows[0]
     })
 }
 
-exports.updateLessonNote = (note_id, notes) => {
+exports.updateLessonNote = (note_id, note_content) => {
     return db.query(`
-        UPDATE lesson_notes
-        SET notes = $1
+        UPDATE notes
+        SET note_content = $1
         WHERE note_id = $2
         RETURNING *
-    `, [notes, note_id])
+    `, [note_content, note_id])
     .then(({ rows }) => {
         return rows[0]
     })
@@ -118,7 +119,7 @@ exports.updateLessonNote = (note_id, notes) => {
 
 exports.removeLessonNoteByLessonId = (lesson_id) => {
     return db.query(`
-        DELETE FROM lesson_notes
+        DELETE FROM notes
         WHERE lesson_id = $1
     `, [lesson_id]);
 }

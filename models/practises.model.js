@@ -31,26 +31,44 @@ exports.fetchUserPracticeNotes = (user_id, practice_id) => {
     const queryValues = [user_id];
     let queryStr = `
         SELECT
-        practice_notes.practice_id,
-        practice_notes.note_id,
-        practice_notes.notes,
+        notes.practice_id,
+        notes.note_id,
+        notes.note_content,
         practises.practice_timestamp
         FROM practises
-        INNER JOIN practice_notes
-        ON practises.practice_id = practice_notes.practice_id
+        INNER JOIN notes
+        ON practises.practice_id = notes.practice_id
         WHERE practises.user_id = $1
     `
     if (practice_id) {
-        queryStr += ' AND practice_notes.practice_id = $2';
+        queryStr += ' AND notes.practice_id = $2';
         queryValues.push(practice_id)
     }
-
     return db.query(queryStr , queryValues)
         .then(({rows}) => {
             if(rows.length === 0) return Promise.reject({status: 404, msg: 'Not found'})
             return rows
         })
 }
+
+exports.fetchPracticeNoteByNoteId = (note_id, practice_id = null) => {
+    let query = `
+        SELECT * FROM notes 
+        WHERE notes.note_id = $1
+    `;
+    const params = [note_id];
+
+    if (practice_id !== null) {
+        query += ` AND notes.practice_id = $2`;
+        params.push(practice_id);
+    }
+
+    return db.query(query, params)
+    .then(({ rows }) => {
+        if (rows.length === 0) return Promise.reject({ status: 404, msg: "Note not found" });
+        return rows[0];
+    });
+};
 
 exports.insertPractice = (user_id, timestamp, duration) => {
     return db.query(`
@@ -65,34 +83,51 @@ exports.insertPractice = (user_id, timestamp, duration) => {
     })
 }
 
-exports.insertPracticeNote = (practice_id, notes) => {
+exports.insertPracticeNote = (practice_id, note_content, learning_focus) => {
     return db.query(`
-        INSERT INTO practice_notes
-        (practice_id, notes)
+        INSERT INTO notes
+        (practice_id, note_content, learning_focus)
         VALUES
-        ($1, $2)
+        ($1, $2, $3)
         RETURNING *
-        `, [practice_id, notes])
+        `, [practice_id, note_content, learning_focus])
     .then(({ rows }) => {
         return rows[0]
     })
 }
 
-exports.updatePracticeNote = (note_id, notes) => {
-    return db.query(`
-        UPDATE practice_notes
-        SET notes = $1
-        WHERE note_id = $2
-        RETURNING *
-        `, [notes, note_id])
-    .then(({ rows }) => {
-        return rows[0]
-    })
-}
+exports.updatePracticeNote = (note_id, updateFields) => {
+    const { note_content, learning_focus } = updateFields;
+
+    let queryStr = "UPDATE notes SET";
+    let paramIndex = 1; 
+
+    const values = [];
+
+    if (note_content) {
+        queryStr += ` note_content = $${paramIndex}`;
+        values.push(note_content);
+        paramIndex++; 
+    }
+    if (learning_focus) {
+        if (values.length !== 0) queryStr += ","
+        queryStr += ` learning_focus = $${paramIndex}`;
+        values.push(learning_focus);
+        paramIndex++; 
+    }
+
+    queryStr += ` WHERE note_id = $${paramIndex} RETURNING *`;
+
+    values.push(note_id);
+    return db.query(queryStr, values)
+        .then(({ rows }) => {
+            return rows[0];
+        });
+};
 
 exports.removePracticeNoteByPracticeId = (practice_id) => {
     return db.query(`
-        DELETE FROM practice_notes
+        DELETE FROM notes
         WHERE practice_id = $1
     `, [practice_id]);
 }

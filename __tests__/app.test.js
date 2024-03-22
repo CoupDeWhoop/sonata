@@ -85,7 +85,7 @@ describe('GET', () => {
                     expect(note).toEqual(
                         expect.objectContaining({
                             note_id: expect.any(Number),
-                            notes: expect.any(String),
+                            note_content: expect.any(String),
                             learning_focus: expect.any(String)                       
                         })
                     )
@@ -113,7 +113,7 @@ describe('GET', () => {
                 expect(note).toEqual(
                     expect.objectContaining({
                         note_id: expect.any(Number),
-                        notes: expect.any(String),
+                        note_content: expect.any(String),
                         learning_focus: expect.any(String)      
                     })
                 )
@@ -178,7 +178,7 @@ describe('GET', () => {
                 expect(note).toMatchObject({
                     practice_id: expect.any(Number),
                     note_id: expect.any(Number),
-                    notes: expect.any(String),
+                    note_content: expect.any(String),
                     practice_timestamp: expect.any(String), // Updated to timestamp
                 })
             })
@@ -197,7 +197,7 @@ describe('GET', () => {
                 expect(note).toMatchObject({
                     practice_id: expect.any(Number),
                     note_id: expect.any(Number),
-                    notes: expect.any(String),
+                    note_content: expect.any(String),
                     practice_timestamp: expect.any(String), // Updated to timestamp
                 })
             })
@@ -230,10 +230,6 @@ describe('GET', () => {
             expect(response.body.error).toBe('Null token')
         });
     });
-
-
-    // describe('GET /api')
-
 })
 
 describe('POST', () => {
@@ -286,7 +282,7 @@ describe('POST', () => {
 
     describe('POST api/lessons/:lesson_id/notes', () => {
         test('201 should respond with the posted lesson note', async() => {
-            const newNote = {learning_focus: 'scales', notes: "C minor pentatonic, 15 octaves. 11 fingers contrary motion" }
+            const newNote = {learning_focus: 'scales', note_content: "C minor pentatonic, 15 octaves. 11 fingers contrary motion" }
             const response = await request(app)    
                 .post('/api/lessons/3/notes')
                 .set('Authorization', `Bearer ${accessTokens.accessToken}`)
@@ -296,7 +292,7 @@ describe('POST', () => {
                     note_id: expect.any(Number),
                     lesson_id: 3,
                     learning_focus: 'scales',
-                    notes: 'C minor pentatonic, 15 octaves. 11 fingers contrary motion'
+                    note_content: 'C minor pentatonic, 15 octaves. 11 fingers contrary motion'
             })
         });
         test('403 should respond with an error if user tries to post to a lesson not of theirs ', async() => {
@@ -342,7 +338,7 @@ describe('POST', () => {
 
     describe('POST api/practises/:practice_id/notes', () => {
         test('201 should respond with the posted practice note ', async() => {
-            const newNote = {practice_id: 3, notes: "managed to conquer G# minor"};
+            const newNote = {practice_id: 3, note_content: "managed to conquer G# minor", learning_focus: "Scales"};
             const response = await request(app)    
                 .post('/api/practises/3/notes')
                 .set('Authorization', `Bearer ${accessTokens.accessToken}`)
@@ -350,7 +346,7 @@ describe('POST', () => {
                 .expect(201)
             expect(response.body.note).toMatchObject({
                 practice_id: 3,
-                notes: "managed to conquer G# minor",
+                note_content: "managed to conquer G# minor",
                 note_id: expect.any(Number)
             })
         });
@@ -374,63 +370,21 @@ describe('POST', () => {
             expect(response.body.msg).toBe('Forbidden')
         });
     });
+})
 
-    describe('DELETE', () => {
-        
-    });
-
-    describe('PATCH', () => {
-        describe('PATCH /api/lessons/notes', () => {
-            test('should update the notes of the given note_id', async() => {
-                const newLessonNotes = {note_id: 3, notes: "gave up on that piece. Onwards!"}
-                const response = await request(app)
-                    .patch('/api/lessons/notes')
-                    .set('Authorization', `Bearer ${accessTokens.accessToken}`)
-                    .send(newLessonNotes)
-                    .expect(200)
-                expect(response.body.note).toMatchObject(
-                    {note_id: 3, lesson_id:2, learning_focus: "Mozart Horn concerto", notes: "gave up on that piece. Onwards!"}
-                )
-            });
-            test('should not update another users lesson note', async() => {
-                const newLessonNotes = {note_id: 9, notes: "what have you been working on Mike?"};
-                const response = await request(app)
-                .patch('/api/lessons/notes')
+describe('DELETE', () => {
+    describe('DELETE /api/lessons/:lesson_id', () => {
+        test('204 should delete the lesson with given lesson_id', async() => {
+            const response = await request(app)
+                .delete('/api/lessons/2')
                 .set('Authorization', `Bearer ${accessTokens.accessToken}`)
-                .send(newLessonNotes)
-                .expect(403)
-            });
-        });
-
-        describe('PATCH /api/practises/:practice_id/notes', () => {
-            test('200 should update the notes given note_id', async() => {
-                const newPracticeNotes = {note_id: 2, notes: "gave up on that piece. Onwards!"}
-                const response = await request(app)
-                    .patch('/api/practises/2/notes')
-                    .set('Authorization', `Bearer ${accessTokens.accessToken}`)
-                    .send(newPracticeNotes)
-                    .expect(200)
-                expect(response.body.note).toMatchObject(
-                    {note_id: 2, practice_id:2, notes: "gave up on that piece. Onwards!"}
-                )
-            });
-        });
-    });
-
-    describe('DELETE', () => {
-        describe('DELETE /api/lessons/:lesson_id', () => {
-            test('204 should delete the lesson with given lesson_id', async() => {
-                const response = await request(app)
-                    .delete('/api/lessons/2')
-                    .set('Authorization', `Bearer ${accessTokens.accessToken}`)
-                    .expect(204)
-                const remainingUserLessons = await request(app)
-                    .get('/api/lessons')
-                    .set('Authorization', `Bearer ${accessTokens.accessToken}`)    
-                    .expect(200)    
-                expect(remainingUserLessons.body.lessons).toHaveLength(3)    
-                })
-        });
+                .expect(204)
+            const remainingUserLessons = await request(app)
+                .get('/api/lessons')
+                .set('Authorization', `Bearer ${accessTokens.accessToken}`)    
+                .expect(200)    
+            expect(remainingUserLessons.body.lessons).toHaveLength(3)    
+            })
 
         test('404 should respond with Not Found if lesson_id does not exist', async () => {
             const nonExistentLessonId = 999; 
@@ -448,8 +402,8 @@ describe('POST', () => {
                 .expect(403);
             expect(response.body.msg).toBe('Forbidden');
         });
+    });
 
-    })
 
     describe('DELETE /api/practises/:practice_id', () => {
         test('204 should delete the lesson with given practice_id', async() => {
@@ -480,8 +434,61 @@ describe('POST', () => {
                 .expect(403);
             expect(response.body.msg).toBe('Forbidden');
         });
+    });
+});
 
+describe('PATCH', () => {
+    describe('PATCH /api/lessons/notes', () => {
+        test('should update the notes of the given note_id', async() => {
+            const newLessonNotes = {note_id: 3, notes: "gave up on that piece. Onwards!"}
+            const response = await request(app)
+                .patch('/api/lessons/notes')
+                .set('Authorization', `Bearer ${accessTokens.accessToken}`)
+                .send(newLessonNotes)
+                .expect(200)
+            expect(response.body.note).toMatchObject(
+                {note_id: 3, lesson_id:2, learning_focus: "Mozart Horn concerto", note_content: "gave up on that piece. Onwards!"}
+            )
+        });
+        test('should not update another users lesson note', async() => {
+            const newLessonNotes = {note_id: 9, notes: "what have you been working on Mike?"};
+            const response = await request(app)
+            .patch('/api/lessons/notes')
+            .set('Authorization', `Bearer ${accessTokens.accessToken}`)
+            .send(newLessonNotes)
+            .expect(403)
+        });
     });
 
-})
+    describe('PATCH /api/practises/:practice_id/notes/:note_id', () => {
+        test('200 should update the notes given note_id', async() => {
+            const newPracticeNotes = { note_content: "leave sight reading for this week" }
+            const response = await request(app)
+                .patch('/api/practises/2/notes/12')
+                .set('Authorization', `Bearer ${accessTokens.accessToken}`)
+                .send(newPracticeNotes)
+                .expect(200)
+            expect(response.body.note).toMatchObject(
+                {note_id: 12, practice_id: 2, learning_focus: "Sight-reading", note_content: "leave sight reading for this week"}
+            )
+        });
+        test('403 should not update another users practice note', async() => {
+            const newLessonNotes = {note_content: "what have you been working on Mike?"};
+            const response = await request(app)
+            .patch('/api/practises/5/notes/19')
+            .set('Authorization', `Bearer ${accessTokens.accessToken}`)
+            .send(newLessonNotes)
+            .expect(403)
+        });
+        test('404 should not update patch incorrect note_id', async() => {
+            const newLessonNotes = {note_content: "what have you been working on Mike?", learning_focus: "Question"};
+            const response = await request(app)
+            .patch('/api/practises/2/notes/60')
+            .set('Authorization', `Bearer ${accessTokens.accessToken}`)
+            .send(newLessonNotes)
+            .expect(404)
+            console.log(response.body);
+        });
+    });
+});
 
