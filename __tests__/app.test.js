@@ -179,6 +179,7 @@ describe('GET', () => {
                     practice_id: expect.any(Number),
                     note_id: expect.any(Number),
                     note_content: expect.any(String),
+                    learning_focus: expect.any(String),
                     practice_timestamp: expect.any(String), // Updated to timestamp
                 })
             })
@@ -487,7 +488,6 @@ describe('PATCH', () => {
             .set('Authorization', `Bearer ${accessTokens.accessToken}`)
             .send(newLessonNotes)
             .expect(404)
-            console.log(response.body);
         });
     });
 });

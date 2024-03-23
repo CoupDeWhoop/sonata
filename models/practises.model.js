@@ -34,6 +34,7 @@ exports.fetchUserPracticeNotes = (user_id, practice_id) => {
         notes.practice_id,
         notes.note_id,
         notes.note_content,
+        notes.learning_focus,
         practises.practice_timestamp
         FROM practises
         INNER JOIN notes
