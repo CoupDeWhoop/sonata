@@ -60,6 +60,35 @@ describe("GET", () => {
     });
   });
 
+  describe("GET /api/notes", () => {
+    test("200 - It should respond with array of all notes for lessons and practises ordered by date", async () => {
+      const response = await request(app)
+        .get("/api/notes")
+        .set("Authorization", `Bearer ${accessTokens.accessToken}`)
+        .expect(200);
+
+      const { body } = response;
+      expect(body.notes).toHaveLength(14);
+      body.notes.forEach((note) => {
+        if (!note.lesson_timestamp) {
+          expect(note.practice_timestamp).toEqual(expect.any(String));
+        } else {
+          expect(note.lesson_timestamp).toEqual(expect.any(String));
+        }
+        if (!note.lesson_id) {
+          expect(note.practice_id).toEqual(expect.any(Number));
+        } else {
+          expect(note.lesson_id).toEqual(expect.any(Number));
+        }
+        expect(note).toMatchObject({
+          note_content: expect.any(String),
+          note_id: expect.any(Number),
+          learning_focus: expect.any(String),
+        });
+      });
+    });
+  });
+
   describe("GET /api/lessons/notes", () => {
     test("200 - It should respond with an array of all lesson_notes associated with the logged-in user", async () => {
       const response = await request(app)
