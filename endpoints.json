@@ -3,48 +3,54 @@
     "description": "serves up a json representation of all the available endpoints of the api"
   },
   "GET /api/lessons": {
-      "description": "serves an array of all lessons for the given user",
-      "queries": [],
-      "exampleResponse": {
-        "lessons": [{
+    "description": "serves an array of all lessons for the given user",
+    "queries": [],
+    "exampleResponse": {
+      "lessons": [
+        {
           "lesson_id": 1,
           "user_id": "33457cf0-2988-4c4e-83bc-fda7cd63e459",
           "lesson_timestamp": "2024-01-01T10:00:00.000Z",
           "duration": 60
-        }]
-      }
+        }
+      ]
+    }
   },
   "POST /api/lessons": {
     "description": "POSTs a new lesson object. Timestamp required. If no duration - defaults to 20mins",
     "queries": [],
     "exampleResponse": {
-      "lessons": [{
-        "lesson_id": 1,
-        "user_id": "33457cf0-2988-4c4e-83bc-fda7cd63e459",
-        "lesson_timestamp": "2024-01-01T10:00:00.000Z",
-        "duration": 60
-      }]
+      "lessons": [
+        {
+          "lesson_id": 1,
+          "user_id": "33457cf0-2988-4c4e-83bc-fda7cd63e459",
+          "lesson_timestamp": "2024-01-01T10:00:00.000Z",
+          "duration": 60
+        }
+      ]
     }
-},
+  },
   "GET /api/lessons/notes": {
     "decription": "serves an array of all user lessons including an array of any notes for each lessonr",
     "queries": [],
     "exampleResponse": {
-      "lessons": [{
-        "lesson_id": 1,
-        "user_id": "33457cf0-2988-4c4e-83bc-fda7cd63e459",
-        "lesson_timestamp": "2024-01-01T10:00:00.000Z",
-        "duration": 60,
-        "notes": [ 
-          {
-            "note_id": 5,
-            "note_content": "Addressed finger technique.",
-            "lesson_id": 2,
-            "lesson_timestamp": "2024-01-01T10:00:00.000Z",
-            "duration": 45
-          }
-        ]
-      }]
+      "lessons": [
+        {
+          "lesson_id": 1,
+          "user_id": "33457cf0-2988-4c4e-83bc-fda7cd63e459",
+          "lesson_timestamp": "2024-01-01T10:00:00.000Z",
+          "duration": 60,
+          "notes": [
+            {
+              "note_id": 5,
+              "note_content": "Addressed finger technique.",
+              "lesson_id": 2,
+              "lesson_timestamp": "2024-01-01T10:00:00.000Z",
+              "duration": 45
+            }
+          ]
+        }
+      ]
     }
   },
   "POST /api/lessons/notes": {
@@ -96,37 +102,36 @@
   "GET /api/practises/notes": {
     "description": "serves up an array of all the practise notes for the logged-in user",
     "queries": [],
-      "exampleResponse": {
-        "practice_id": 3,
-        "note_id": 7,
-        "notes": "Practised specific passages.",
-        "practice_timestamp": "2024-01-01T10:00:00.000Z"
+    "exampleResponse": {
+      "practice_id": 3,
+      "note_id": 7,
+      "notes": "Practised specific passages.",
+      "practice_timestamp": "2024-01-01T10:00:00.000Z"
     }
   },
   "GET /api/practises/:practice_id/notes": {
     "description": "serves up an array of practise notes for the given practice_id",
     "queries": [],
-      "exampleResponse": {
-        "practice_id": 3,
-        "note_id": 7,
-        "notes": "Practised specific passages.",
-        "practice_timestamp": "2024-01-01T10:00:00.000Z"
+    "exampleResponse": {
+      "practice_id": 3,
+      "note_id": 7,
+      "notes": "Practised specific passages.",
+      "practice_timestamp": "2024-01-01T10:00:00.000Z"
     }
   },
   "POST /api/practises/:practice_id/notes": {
     "description": "POSTs a new practise note",
     "queries": [],
-      "exampleResponse": {
-        "practice_id": 3,
-        "note_id": 7,
-        "notes": "Practised some more passages.",
-        "practice_timestamp": "2024-01-01T10:00:00.000Z"
+    "exampleResponse": {
+      "practice_id": 3,
+      "note_id": 7,
+      "notes": "Practised some more passages.",
+      "practice_timestamp": "2024-01-01T10:00:00.000Z"
     }
   },
   "PATCH /api/practises/:practice_id/notes/:note_id": {
     "description": "updates the given note."
   },
-
 
   "ADMIN only endpoints": {
     "GET /api/users": {
