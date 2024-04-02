@@ -24,8 +24,10 @@ exports.fetchPracticeByPracticeId = (user_id, practice_id) => {
       [practice_id]
     )
     .then(({ rows }) => {
-      if (rows.length === 0)
+      if (rows.length === 0) {
+        console.log("heheheheui");
         return Promise.reject({ status: 404, msg: "Practice not found" });
+      }
       if (rows[0].user_id !== user_id)
         return Promise.reject({ status: 403, msg: "Forbidden" });
       return rows[0];
@@ -90,6 +92,31 @@ exports.insertPractice = (user_id, timestamp, duration) => {
     .then(({ rows }) => {
       return rows[0];
     });
+};
+
+exports.updatePractice = (practice_id, timestamp, duration) => {
+  let queryStr = "UPDATE practises SET";
+  let paramIndex = 1;
+
+  const values = [];
+
+  if (timestamp) {
+    queryStr += ` practice_timestamp = $${paramIndex}`;
+    values.push(timestamp);
+    paramIndex++;
+  }
+
+  if (duration) {
+    if (values.length !== 0) queryStr += ",";
+    queryStr += ` duration = $${paramIndex}`;
+    values.push(duration);
+    paramIndex++;
+  }
+
+  queryStr += ` WHERE practice_id = $${paramIndex} RETURNING *;`;
+  values.push(practice_id);
+
+  return db.query(queryStr, values).then(({ rows }) => rows[0]);
 };
 
 exports.insertPracticeNote = (practice_id, note_content, learning_focus) => {

@@ -7,6 +7,7 @@ const {
   fetchPracticeByPracticeId,
   removePracticeNoteByPracticeId,
   removePracticeByPracticeId,
+  updatePractice,
   fetchPracticeNoteByNoteId,
 } = require("../models/practises.model.js");
 const { checkExists, checkUserMatch } = require("../utils/utils.js");
@@ -26,6 +27,7 @@ exports.getUserPractises = (req, res, next) => {
 exports.getUserPracticeNotes = (req, res, next) => {
   const { user_id } = req.user;
   const { practice_id } = req.params;
+
   fetchUserPracticeNotes(user_id, practice_id)
     .then((notes) => {
       res.status(200).send({ notes });
@@ -39,8 +41,22 @@ exports.postPractice = (req, res, next) => {
   const { user_id } = req.user;
   const { timestamp, duration } = req.body;
   insertPractice(user_id, timestamp, duration)
-    .then((note) => {
-      res.status(201).send({ note });
+    .then((practice) => {
+      res.status(201).send({ practice });
+    })
+    .catch((err) => next(err));
+};
+
+exports.patchPractice = (req, res, next) => {
+  const { user_id } = req.user;
+  const { timestamp, duration } = req.body;
+  const { practice_id } = req.params;
+  fetchPracticeByPracticeId(user_id, practice_id)
+    .then(() => {
+      return updatePractice(practice_id, timestamp, duration);
+    })
+    .then((practice) => {
+      res.status(200).send({ practice });
     })
     .catch((err) => next(err));
 };

@@ -3,6 +3,7 @@ const {
   getUserPractises,
   getUserPracticeNotes,
   postPractice,
+  patchPractice,
   deletePracticeByPracticeId,
   postPracticeNote,
   patchPracticeNote,
@@ -23,6 +24,7 @@ practiceRouter.delete(
   authenticateToken,
   deletePracticeByPracticeId
 );
+practiceRouter.patch("/:practice_id", authenticateToken, patchPractice);
 practiceRouter.post("/:practice_id/notes", authenticateToken, postPracticeNote);
 practiceRouter.patch(
   "/:practice_id/notes/:note_id",

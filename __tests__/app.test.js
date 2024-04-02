@@ -347,7 +347,7 @@ describe("POST", () => {
         .send(newPractice)
         .set("Authorization", `Bearer ${accessTokens.accessToken}`)
         .expect(201);
-      expect(response.body.note).toMatchObject({
+      expect(response.body.practice).toMatchObject({
         practice_id: expect.any(Number),
         user_id: decodedPayload.user_id,
         practice_timestamp: currentTimeStamp,
@@ -504,6 +504,23 @@ describe("PATCH", () => {
         .set("Authorization", `Bearer ${accessTokens.accessToken}`)
         .send(newLessonNotes)
         .expect(403);
+    });
+  });
+
+  describe("PATCH /api/practises/:practice_id", () => {
+    test("200 should update the practice", async () => {
+      const timeNow = new Date().toISOString();
+      const practiceUpdate = { duration: 34, timestamp: timeNow };
+      const response = await request(app)
+        .patch("/api/practises/3")
+        .set("Authorization", `Bearer ${accessTokens.accessToken}`)
+        .send(practiceUpdate)
+        .expect(200);
+      expect(response.body.practice).toMatchObject({
+        practice_id: 3,
+        duration: 34,
+        practice_timestamp: timeNow,
+      });
     });
   });
 

@@ -14,6 +14,9 @@
     "prepare": "husky"
   },
   "keywords": [],
+  "jest": {
+    "globalSetup": "./global-setup.js"
+  },
   "author": "",
   "license": "ISC",
   "dependencies": {

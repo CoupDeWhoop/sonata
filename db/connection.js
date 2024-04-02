@@ -17,6 +17,8 @@ if (ENV === "production") {
   config.max = 2;
 }
 
+config.timezone = "UTC";
+
 const connection = new Pool(config);
 
 module.exports = connection;
