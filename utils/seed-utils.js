@@ -1,8 +1,8 @@
 const { v4: uuidv4 } = require("uuid");
 const bcrypt = require("bcrypt");
 
-exports.generateUserUUIDs = (userData) => {
-  return userData.map((user) => ({
+exports.generateUserUUIDs = (userDataArray) => {
+  return userDataArray.map((user) => ({
     ...user,
     user_id: uuidv4(), // Generate UUID for each user
   }));

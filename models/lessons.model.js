@@ -61,8 +61,11 @@ exports.fetchUserLessonsAndNotes = (user_id, lesson_id) => {
 
   queryStr += " ORDER BY lessons.lesson_timestamp DESC;";
   return db.query(queryStr, queryValues).then(({ rows }) => {
-    if (rows.length === 0)
+    if (rows.length === 0 && lesson_id) {
       return Promise.reject({ status: 404, msg: "Lesson not found" });
+    } else if (rows.length === 0) {
+      return rows;
+    }
 
     const lessonsWithNotesArray = rows.reduce((acc, row) => {
       const {

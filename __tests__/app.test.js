@@ -116,6 +116,32 @@ describe("GET", () => {
         });
       });
     });
+    test("200 - It should return an empty array for a user without any lessons or notes", async () => {
+      const newUser = {
+        user_name: "Harry",
+        user_email: "haribo@hazbob.bob",
+        user_password: "testPassword1234",
+        instrument: "Harmonica",
+      };
+      const createUser = await request(app)
+        .post("/api/users")
+        .send(newUser)
+        .expect(201);
+
+      const login = await request(app)
+        .post("/api/auth/login")
+        .send({ email: newUser.user_email, password: newUser.user_password })
+        .expect(200);
+
+      const accessToken = login.body.tokens.accessToken;
+
+      const lessonResponse = await request(app)
+        .get("/api/lessons/notes")
+        .set("Authorization", `Bearer ${accessToken}`)
+        .expect(200);
+
+      expect(lessonResponse.body.lessons).toHaveLength(0);
+    });
   });
 
   describe("GET /api/lessons/:/lesson_id/notes", () => {

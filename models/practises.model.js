@@ -25,7 +25,6 @@ exports.fetchPracticeByPracticeId = (user_id, practice_id) => {
     )
     .then(({ rows }) => {
       if (rows.length === 0) {
-        console.log("heheheheui");
         return Promise.reject({ status: 404, msg: "Practice not found" });
       }
       if (rows[0].user_id !== user_id)
