@@ -32,6 +32,18 @@ describe("Authorization", () => {
         instrument: "Harmonica",
       });
     });
+    test("should reject a repeated user email address", async () => {
+      const newUser = {
+        user_name: "Harry",
+        user_email: "testemail@test.com",
+        user_password: "testPassword1234",
+        instrument: "Trombonio",
+      };
+      const response = await request(app)
+        .post("/api/users")
+        .send(newUser)
+        .expect(400);
+    });
   });
 
   describe("POST /api/auth/login", () => {

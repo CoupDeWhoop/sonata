@@ -16,9 +16,14 @@ app.use((err, req, res, next) => {
   if (err.code === "22P02" || err.code === "23502" || err.code === "22007") {
     res.status(400).send({ msg: "Invalid request" });
   }
+  if (err.code === "23505") {
+    res.status(400).send({ msg: "Bad request: duplicate entry" });
+  }
   if (err.status) {
     res.status(err.status).send(err);
   }
+  // catch any others
+  res.status(500).send({ msg: "Internal Server Error" });
 });
 
 app.all("/*", (req, res, next) => {
