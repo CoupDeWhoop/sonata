@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 
 exports.authenticateToken = (req, res, next) => {
-  const authHeader = req.headers["authorization"]; //"Bearer Token ..."
+  const authHeader = req.headers["authorization"]; //"Bearer {Token}"
   const token = authHeader && authHeader.split(" ")[1];
   if (!token) return res.status(401).json({ error: "Null token" }); // not Promise.reject
 

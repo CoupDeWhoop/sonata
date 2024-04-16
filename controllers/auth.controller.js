@@ -17,9 +17,12 @@ exports.postLogin = (req, res, next) => {
 
 exports.getRefreshToken = (req, res, next) => {
   const refreshToken = req.cookies.refresh_token;
-  verifyRefreshToken(refreshToken)
+
+  const token =
+    req.headers["authorization"] && req.headers["authorization"].split(" ")[1];
+
+  verifyRefreshToken(refreshToken || token)
     .then((tokens) => {
-      res.cookie("refresh_token", tokens.refreshToken, { httpOnly: true });
       res.status(200).send({ tokens });
     })
     .catch((err) => {

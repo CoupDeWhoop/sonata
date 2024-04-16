@@ -115,5 +115,28 @@ describe("Authorization", () => {
         accessToken: expect.any(String),
       });
     });
+
+    test("200 - user refresh successful when sent in header", async () => {
+      const credentials = {
+        email: "testemail@test.com",
+        password: "Password123",
+      };
+      const response = await request(app)
+        .post("/api/auth/login")
+        .send(credentials)
+        .expect(200);
+
+      const loginTokens = response.body.tokens;
+      console.log(loginTokens, "line 130");
+
+      const response2 = await request(app)
+        .get("/api/auth/refresh-token")
+        .set("Authorization", `Bearer ${loginTokens.refreshToken}`) // Set Authorization header
+        .expect(200);
+      expect(response2.body.tokens).toMatchObject({
+        refreshToken: expect.any(String),
+        accessToken: expect.any(String),
+      });
+    });
   });
 });
