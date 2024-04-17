@@ -8,6 +8,7 @@ exports.fetchUserPractises = (user_id, practice_id) => {
     queryStr += " AND practises.practice_id = $2";
     queryValues.push(practice_id);
   }
+  queryStr += " ORDER BY practises.practice_timestamp ASC";
 
   return db.query(queryStr, queryValues).then(({ rows }) => {
     return rows;

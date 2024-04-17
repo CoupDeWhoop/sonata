@@ -127,7 +127,6 @@ describe("Authorization", () => {
         .expect(200);
 
       const loginTokens = response.body.tokens;
-      console.log(loginTokens, "line 130");
 
       const response2 = await request(app)
         .get("/api/auth/refresh-token")
